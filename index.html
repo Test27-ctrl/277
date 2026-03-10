@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jorwal Parivaar | Heritage Directory</title>
+    
+    <!-- React & Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              night: { bg: '#0a0202', card: '#1A0505', border: '#D4AF37', text: '#F3E5AB', accent: '#8B0000' }
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFF9F0; overflow-x: hidden; width: 100%; transition: background-color 0.5s ease; }
+        .dark body { background-color: #0a0202; }
+        .font-serif { font-family: 'Bodoni Moda', serif; }
+        .pattern-bg { 
+            background-color: #FFF9F0; 
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 15-15 15L15 15zM0 30l15-15 15 15-15 15zm30 30l15-15-15-15-15 15zm30-30l-15-15-15 15 15 15z' fill='%23D4AF37' fill-opacity='0.04' fill-rule='evenodd'/%3E%3C/svg%3E"); 
+        }
+        .dark .pattern-bg {
+            background-color: #0a0202;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 15-15 15L15 15zM0 30l15-15 15 15-15 15zm30 30l15-15-15-15-15 15zm30-30l-15-15-15 15 15 15z' fill='%23D4AF37' fill-opacity='0.02' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .custom-scrollbar::-webkit-scrollbar { height: 10px; width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #D4AF37, #AA771C); border-radius: 10px; }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+        .modal-main-container { max-height: 90vh; overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, Fragment, useRef } = React;
+
+        // --- ICON WRAPPER ---
+        const Icon = ({ name, size = 24, className = "", strokeWidth = 2 }) => {
+            const iconRef = useRef(null);
+            useEffect(() => {
+                if (iconRef.current && window.lucide) {
+                    iconRef.current.innerHTML = `<i data-lucide="${name}" stroke-width="${strokeWidth}"></i>`;
+                    window.lucide.createIcons({ root: iconRef.current });
+                }
+            }, [name, strokeWidth]);
+            return <span ref={iconRef} className={className} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: size, height: size }} />;
+        };
+
+        // --- RAW HARDCODED DATA ---
+        const familyTreeData = {
+          generation: 1,
+          parents: [
+            { id: 'g1-1', generation: 1, name: "Badree Prasad Meena", role: "The Patriarch", image: "https://lh3.googleusercontent.com/pw/AP1GczOQv5ccqvMzGUY3euF_2Yrr45Nqyvakr2VfMjciZ8p4IvmLYtcY2YZ7vPJMc577OB-kFi6KGx0b6rDmuEYz90w-G3e5FQhVEaPqLf3WPXsyi8p_jKbwBlgYYfuubd-b2P0to3dBKg3Jj1g_ZxpEyQbbSQ=w647-h863-s-no-gm?authuser=0", bio: "A hardworking farmer who built the foundation of this parivaar. His dedication created the legacy we enjoy today.", profession: "Farmer / Founder", birthday: "1 January 1947" },
+            { id: 'g1-2', generation: 1, name: "Kisturi Devi Meena", role: "The Matriarch", image: "https://lh3.googleusercontent.com/pw/AP1GczPq7QJvIYFQWJZ6cf13QOELIidUKIMSvcDuvFHbYlB3ARoS5WE6k09chSMRRDx2VGkQ0GsyOmWaJLr1RjCcHEMW6ls3N7SwC2QbiYGVvFT4o1MUyX40OIF1hE1XPaSE8IU6RPO8WtAoCNc6Y_NViZk7ag=w648-h863-s-no-gm?authuser=0", bio: "The soul of the Jorwal family. She nurtured the roots with boundless love and traditional values.", location: "Jodhpura", profession: "Farmer / Founder", birthday: "10 January 1945" }
+          ],
+          children: [
+            {
+              id: 'b1',
+              generation: 2,
+              parents: [
+                { id: 'g2-1', generation: 2, name: "Laxmi Narayan Meena", role: "Eldest Son", image: "https://lh3.googleusercontent.com/pw/AP1GczNr64LM5JclZkftuGP9DZZLa7mSatLodlX-1LQf2S3l-CZwyeJMAx2FjvZdg1jm8FoZjC2PBR0AyPRCkCxAqitHyheFLfFrCmyhwXXFM-Ynb__eM2i0AxMgxHH1YSmmZBrNGIVocz2yIEa0FytgKFR1xQ=w693-h863-s-no-gm?authuser=0", location: "Gwalior", profession: "Manager, FCI", birthday: "15 October" },
+                { id: 'g2-2', generation: 2, name: "Santra Devi Meena", role: "Daughter-in-law", image: "https://lh3.googleusercontent.com/pw/AP1GczOdpkv-ymtc2V-2aMwEJwJz7j4JNf4MMfIYAeZ0E3QSUld3xXWxAbxRtiF9Isj0BLhc2uWnTJ7SpuDv-Xb1ZSbaUkTlq4B5nmBUgfp8_kzbFEOtWRZT8AWONiLLjyWoUQCE1_z2cfcuj_TGcnifa4-xtg=w647-h863-s-no-gm?authuser=0", location: "Jaipur", profession: "Housewife", birthday: "10 November 1975" }
+              ],
+              children: [
+                {
+                  id: 'c1-1',
+                  generation: 3,
+                  parents: [
+                    { id: 'g3-1', generation: 3, name: "Meera Jorwal", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczPuYcxT6sibS72KDDkEO_MsFJSj6RRl4fkDi3DqH4ETgyNeR1qrJSZQNnhGbvwCLLtxzKQQNbukTltTy9UPLdTtH5SgsA2vJFZ2802skKvlc6oAEwi7AK6vxJAqXsMZSNxnCFGJejflPFklGupWL3cmxQ=w648-h863-s-no-gm?authuser=0", birthday: "15 August", profession: "Housewife", location: "Ahmedabad" },
+                    { id: 'g3-1s', generation: 3, name: "Hemant Sehra", role: "Son-in-law", image: "https://lh3.googleusercontent.com/pw/AP1GczM2eSlATnHKnpazdZOQD5d4vaSOfOT5VVNnXwW5cde-2AudACAei8G0qq1KVpB0gj0wmCUuY3Wy5YLNsdoBGyLSUX-RcCCEm0oz-h_sykxMBuOEKKxaWmv8ZZAJJfsmD5uLKRQImk-qWuzAhK9ZFY26cw=w648-h863-s-no-gm?authuser=0", profession: "Engineer in DFCCIL", location: "Ahmedabad" }
+                  ],
+                  children: [{ id: 'g4-1', parents: [{ id: 'g4-1p', name: "Hazel Sehra", role: "Great-Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczPMEmBTHX0errmWsPmbF0hrzVCoKWbYvDjhn7-SgsbXpbGOkHluvFS2WyMsyn6CeEQBwMlfySAVOp1VptGjgGx2fdgX8xlonvjGqJliNp9Q1rtxLQ6OgXvfZ7UJwTprjIHlhDf79KvQaHnpS8y6K4sshQ=w485-h863-s-no-gm?authuser=0", birthday: "15 August 2023", profession: "Student", location: "Ahmedabad" }], children: [] }]
+                },
+                {
+                  id: 'c1-2',
+                  generation: 3,
+                  parents: [
+                    { id: 'g3-2', generation: 3, name: "Ghanshyam Jorwal", role: "Grandson", image: "https://lh3.googleusercontent.com/pw/AP1GczMsPGREabd_a6ehUTxYgyCl9impKee-bIwRyBPD33zcr-_vUFfAjZ-S5iI83VzFjvuF3tlFXAbU80rNMz6nmfXtSRKfENvXWxV_2l4mZ4klpgjPLq3UdNd0vgdw6BtOW9-pA4bmIMGJJ4iejDTuVHijQg=w647-h863-s-no-gm?authuser=0", birthday: "7 July", profession: "A.En, DDA", location: "Delhi/NCR" },
+                    { id: 'g3-2s', generation: 3, name: "Vimleshi Meena", role: "Daughter-in-law", image: "https://lh3.googleusercontent.com/pw/AP1GczNaJXoj_N89hS8qsm23bx_7pYtUWfN_e3YCVMZSwyGRFkvGlaY6sXuZZPQKXHg7yg2bTQhy5SgqbwNLTd3FQ-G2T_JqxLROOHT1dDnN31A78f-J2QKtcmnGlFP68Dxz7_TAV53rLhvJQJJ5_cAFx38HPg=w647-h863-s-no-gm?authuser=0", profession: "Housewife", location: "Delhi/NCR" }
+                  ],
+                  children: [{ id: 'g4-2', parents: [{ id: 'g4-2p', name: "Reyansh Jorwal", role: "Great-Grandson", image: "https://lh3.googleusercontent.com/pw/AP1GczObtTmcVlPVANtbX85IBSITDJnFbdegrRUXrrwSJOl5hbP0aAzcyD8pgMisJXpOR0JQYTEvapuPbhasX7Tzy-H1efuhac_dn5dXCma6sPSLjxKW_fc22U-s3DZShZMKixlnQZAISTXek_xo68rsBrGTig=w552-h863-s-no-gm?authuser=0", birthday: "19 November 2023", profession: "Student", location: "Delhi/NCR" }], children: [] }]
+                },
+                {
+                  id: 'c1-3',
+                  generation: 3,
+                  parents: [
+                    { id: 'g3-3', generation: 3, name: "Shiv Ram Meena", role: "Grandson", image: "https://lh3.googleusercontent.com/pw/AP1GczNYFQ7gSu2xn6BnAMwiHCVsq1zzXvOKdsuPz2M-gW4IYOF8YTEn_MnXyV2vHJzY47mV5jkPY0y6ykAhfdVjEN12N5QIhjKIckNrrCzs_e5w2-mIjT4p79uycAFkJbq-HrNuGoZiVsJsM8EfRwM-aAf3kQ=w647-h863-s-no-gm?authuser=0", birthday: "4 February", profession: "Inspector, Mumbai Customs", location: "Mumbai" },
+                    { id: 'g3-3s', generation: 3, name: "Priyanka Tatu", role: "Daughter-in-law", image: "https://lh3.googleusercontent.com/pw/AP1GczPIvg7JuWY9mVgAgTZlubjXhCVbzP2NBk_AQ8HbZH_W7CUSStPv8mNY7jVA6zq4FqQfy3QZiUMgy46J9OaQmFAoe6G5_w8FDtIve6H8fFkgF6lDX3fCKJr6UBw-0WhVqdDIc6gdsXUtL4KaOosw1cnI1A=w846-h863-s-no-gm?authuser=0", profession: "Secret RAS aspirant", location: "Mumbai" }
+                  ],
+                  children: []
+                },
+                {
+                    id: 'c1-4',
+                    generation: 3,
+                    parents: [
+                      { id: 'g3-4', name: "Aarti Meena", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczPlH8Abg8MGCRwwtb-vkHKI36FZW59Eayt5XICiyVJZ8noqF3iaKHMc2pTG2aEZyroprGGPGVxahlmDNYq3YCCt4QZ2LeVyXVzFUTPQlEBHddFu1S_LScy8acZLZrMVX5jRgKvS88SofL_ju_umF4RM5A=w648-h863-s-no-gm?authuser=0", birthday: "20 December", profession: "Branch Manager, BoB", location: "Kirwada" },
+                      { id: 'g3-4s', name: "Bhawani Meena", role: "Son-in-law", image: "https://lh3.googleusercontent.com/pw/AP1GczPylRY8HdftAEJYCjaxDqN66e_UthqWKbhbYlxfAjBlDgPFY82obGmm5vUZ73oxBx_Q5tsHWGQdtUwF07360cHh6_mdbSeTt0NYZCh0q9Mkw_vdRNdlk632R8vka7j9H4ynMcq1jxKcdubkCj58EQZfaA=w647-h863-s-no-gm?authuser=0", profession: "J.En. in WRD", location: "Kirwada" }
+                    ],
+                    children: [{ id: 'g4-6', parents: [{ id: 'g4-6p', name: "Prisha Mothiya", role: "Great-Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczP64voZH0Z9hPWwhLrj4lpPYIanCx7Zvvg9L9k_d6a6HnTMpZoVe3nkboizVJo8rHvpVD4FMFsewR3CUAa9t1GkquDP8o11qONfPqaLryPK4V-B_PEYsad_OqsYjwNVfeYACcJRqibna3Yx3NOscYoxRg=w684-h863-s-no-gm?authuser=0", birthday: "25 August 2025", location: "Kirwada" }], children: [] }]
+                }
+              ]
+            },
+            {
+              id: 'b2',
+              generation: 2,
+              parents: [
+                { id: 'g2-3', generation: 2, name: "Radhe Shyam Meena", role: "Middle Son", image: "https://lh3.googleusercontent.com/pw/AP1GczPQv8O2qT2_3Yqf2LWnmxOIBA927fffZH73xvcsRcKZR9XJbh_qm6ErblzUh_5HcAOJ8Y6Xohzqdf8YFO8BEEk7zpXvlXra-i-Ij2Ln1qnlxAziU-9cHcTWTbfFF-9sO17Awp0cxpWaLA49-oJTL9KqPA=w647-h863-s-no-gm?authuser=0", profession: "Farmer" },
+                { id: 'g2-4', generation: 2, name: "Muneshi Devi Meena", role: "Daughter-in-law", image: "https://lh3.googleusercontent.com/pw/AP1GczOhs7BXr_6Z73T80Wjn8-sKy1BJL4rKDYhNrc6Aon9yNzY7E1oNx5SmlDCuwKe_hVvIfF9d8XUNdTcGowFuFf-V5e-ZZxmiz_OYIF06nh5xtw98OxxFJotxyQyPmk3Md5K3lgPjja5-jd4Z0VfpqgJBAg=w647-h863-s-no-gm?authuser=0", birthday: "10 January 1973", profession: "Housewife", location: "Jodhpura" }
+              ],
+              children: [
+                {
+                  id: 'c2-1',
+                  generation: 3,
+                  parents: [
+                    { id: 'g3-5', generation: 3, name: "Pooja Meena", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczNYpBdKDCqotwafpGkuFTNXLoNS-4EHUm6zjhkBp_A8NQwr77TThICfMHMqsHVAT8ArgOzsr801YlYX8zID0b1boZHFJ6yBPTlSjR72vDFoY80udgSIJDgjd22QO1mqMkKV-HaBLQlH0R3SCk-k_5FyjQ=w647-h863-s-no-gm?authuser=0", birthday: "10 May 1998", profession: "Housewife", location: "Delhi/NCR" },
+                    { id: 'g3-5s', generation: 3, name: "Pawan Meena", role: "Son-in-law", image: "https://lh3.googleusercontent.com/pw/AP1GczNxapGZMtp0c8LOnsT2ObcBoWwK79TXK7z_yN8FsX2J_CX7AvpBLm5k2162_ahIMyuuMoVyUMNjjKjkGj5O1LuMIcGf0Jzty2P-tz4naJHTSgWkFpPPy8JwBGM4DStRwLqtwJkmnHopUa2vRYukjhsS3Q=w647-h863-s-no-gm?authuser=0", profession: "CA in indian railways", location: "Delhi/NCR" }
+                  ],
+                  children: [{ id: 'g4-4', parents: [{ id: 'g4-4p', name: "Saanvi Ghunawat", role: "Great-Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczN0PgG8aJvfR-LI9mlo_nBILbwOtKc4jm-0ZS5Z9Gxk59zu7oOgxufmH9obAMbRMA6HKduD0LDmnuuvZqt8CRXORmeivKikKpazs70hunZfrUnsajTJaoBvxO_wUJwoMHloHEY-P4Fz4mLY0QTuE_DH3g=w585-h780-s-no-gm?authuser=0", birthday: "20 March 2023", location: "Delhi/NCR" }], children: [] }]
+                },
+                { id: 'c2-2', parents: [{ id: 'g3-6', name: "Bharati Jorwal", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczOdo_eT1w3Iep-A6_5zn6TKhVI687QGy3ol2bKTJcx72w94TwP0r3xIST2Ew0onZ39zYz0Nrn6wDMiWW9Q4YCZu7spWH3PKezBsZU71FbwWv0f1os1GY9QRMbXOB3cysZ0Al-SDoVRylHkmxJZuftx7fw=w648-h863-s-no-gm?authuser=0", birthday: "15 May 2002", profession: "Hardworking Aspirant", location: "Jaipur" }], children: [] },
+                { id: 'c2-3', parents: [{ id: 'g3-7', name: "Deepak Jorwal", role: "Grandson", image: "https://lh3.googleusercontent.com/pw/AP1GczNNOgXHtcL3eFT0m3ldngKu6E906TfdgEK4YQNlyAC4C12POOeI6yyjvjiSoqMnYWZFxayL1pfO1Gao4RRrCNixuSsYvFtojgW97rdz1Ep2-q9GJi3HFfb6fKRJf3AWTaVIajEAm8m_1X533G0VcI9-zQ=w324-h432-s-no-gm?authuser=0", birthday: "3 October 2003", profession: "AG-3, VV GIRI NLI", location: "Noida" }], children: [] },
+                { id: 'c2-4', parents: [{ id: 'g3-8', name: "Parvati Meena", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczObA63lmrBXkzJhIukcBuhHQWPY_ohkrteAOqB6Xf9mLLx0fyHit3_q3Z1YvPBYF8sFlnY67P93R3N3v1an9IOO4EfHp01twZyep-wMeADfOAUnT5Hq37GEH91V4ObwKiVG731fzSzQn2njdy94ooRqPA=w723-h863-s-no-gm?authuser=0", birthday: "25 March 2006", profession: "Hardworking Aspirant", location: "Jodhpura" }], children: [] },
+                { id: 'c2-5', parents: [{ id: 'g3-9', name: "Himanshu Jorwal", role: "Grandson", image: "https://lh3.googleusercontent.com/pw/AP1GczPLdVpFs-cOa5ceI0DYUYZtqxifGYMQpToVpDlSgVEArKgpxPSr0y_s2AQdmFV-pGyhI3hJkIGYAQt8SwZ85lcigDDQAeynt4TtpcsnLn80K8NoLF9eBbLiSS_I-sPYjtX9pEJmrZ8YxV1PJzNyR3E7dg=w647-h863-s-no-gm?authuser=0", birthday: "24 February 2008", profession: "Student ( undergraduate)", location: "Jaipur" }], children: [] }
+              ]
+            },
+            {
+                id: 'b3',
+                generation: 2,
+                parents: [
+                  { id: 'g2-5', name: "Ramhari Meena", role: "Youngest Son", image: "https://lh3.googleusercontent.com/pw/AP1GczNdMiIlmZA-WHcJs9__Il_0SRq0IdzpHuumyUqIFY9ox_FEVGxOQu163Ejrxl4d4nco-arg0JOIXxtQeaOvaXjXyatLyNiDvs70_AQiwMKOWtcNiQXG0MRtw05XJTiLxx6XICyPwRJn8lRQdNJHw2ICsg=w444-h594-s-no-gm?authuser=0", birthday: "7 July 1981", profession: "Tech-3, Indian Railway", location: "Bengaluru" },
+                  { id: 'g2-6', name: "Pushpa Devi Meena", role: "Daughter-in-law", image: "https://lh3.googleusercontent.com/pw/AP1GczNMF7NrIulCYssLtBQbJQVUGLfvp9Uirgv8Rtjl3MU0l7tN7RuTGW4smqe0uBLBujKr5-Y1NWUnxKSZCrJ0J7-i_1kH-vANVju3p6fVgpFDc8irWx3mtycVZEFsLgOI0qsHm8UZf9YNG6ZBaeI1AiVcOQ=w647-h863-s-no-gm?authuser=0", birthday: "10 January 1973", profession: "Housewife", location: "Bengaluru" }
+                ],
+                children: [
+                  { id: 'c3-1', parents: [{ id: 'g3-10', name: "Abhishek Jorwal", role: "Grandson", image: "https://lh3.googleusercontent.com/pw/AP1GczN-qVMbRGqXjWXsrtBb5rATV_XfHQMNW8sKy6kBsGLNgMQXSVDvdKmJEX4zm5o8xeYcrFGewj2wYmAdJMiWVEvoam5i_OKbQwtzhpiaETvVDSCsI2sfy-bfYDprtZiLyq0XarT0TvtAjA1DUQsKOUWk4A=w747-h863-s-no-gm?authuser=0", birthday: "13 October 2003", profession: "SBI JA", location: "Jaipur" }], children: [] },
+                  { id: 'c3-2', parents: [{ id: 'g3-11', name: "Shivani Jorwal", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczPygGljoGWnkEsjPgJfYKjvWFnDOqph3ydGCngTXTJaIQD7K-ozoXztg8IW5skzOYtVm8RC--w-uZ9gTesvQm3WFTqa5l3M_pdNUHO-sQcS_Yez7RjASrp8w2TtpFLQUh_V4kCWRse8yt0pavPtpokHog=w647-h863-s-no-gm?authuser=0", birthday: "20 December 2007", location: "Bengaluru" }], children: [] },
+                  { id: 'c3-3', parents: [{ id: 'g3-12', name: "Ankita Jorwal", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczMQfCSXCham2A3YuG9Iw4KOylbKr2K6qoMM_-im4kGVwcB5dxhrVxjoEQBgCfIUb__GnCFaLJ-0omiqqgiEZfd0nUxEtf-fgF8bKUB_OyFCRCUkk-vUNnWqfay_N34dJB-dBHq8M2mldtRbEEOvDeWdkA=w665-h863-s-no-gm?authuser=0", birthday: "15 February 2009", location: "Bengaluru" }], children: [] }
+                ]
+              }
+          ]
+        };
+
+        const allParivaarEvents = [
+          { id: 1, date: "1 January", event: "Dadaji's Birthday", type: "birthday" },
+          { id: 2, date: "10 January", event: "Dadiji's Birthday", type: "birthday" },
+          { id: 3, date: "10 January", event: "Muneshi Devi's Birthday", type: "birthday" },
+          { id: 4, date: "10 May", event: "Pooja Meena's Birthday", type: "birthday" },
+          { id: 5, date: "7 July", event: "Ramhari Meena's Birthday", type: "birthday" },
+          { id: 6, date: "7 July", event: "Ghanshyam's Birthday", type: "birthday" },
+          { id: 7, date: "15 August", event: "Meera's Birthday", type: "birthday" },
+          { id: 8, date: "15 August", event: "Hazel Sehra's Birthday", type: "birthday" },
+          { id: 9, date: "3 October", event: "Deepak Jorwal's Birthday", type: "birthday" },
+          { id: 11, date: "13 October", event: "Abhishek Jorwal's Birthday", type: "birthday" },
+          { id: 12, date: "15 October", event: "Laxmi Narayan's Birthday", type: "birthday" },
+          { id: 14, date: "19 November", event: "Reyansh Jorwal's Birthday", type: "birthday" },
+          { id: 15, date: "20 December", event: "Shivani's Birthday", type: "birthday" },
+          { id: 16, date: "20 December", event: "Aarti Meena's Birthday", type: "birthday" },
+          { id: 17, date: "15 February", event: "Ankita Jorwal's Birthday", type: "birthday" },
+          { id: 18, date: "4 February", event: "Shivram's Birthday", type: "birthday" },
+          { id: 19, date: "15 May", event: "Bharati Jorwal's Birthday", type: "birthday" },
+          { id: 20, date: "25 March", event: "Parvati's Birthday", type: "birthday" },
+          { id: 21, date: "24 February", event: "Himanshu's Birthday", type: "birthday" },
+          { id: 22, date: "20 March", event: "Saanvi's Birthday", type: "birthday" },
+          { id: 23, date: "25 August", event: "Prisha's Birthday", type: "birthday" },
+        ];
+
+        const journeyData = [
+          { year: "1945 / 47", title: "The Foundation", desc: "Our founders, Kisturi Devi Ji and Badree Prasad Ji, were born." },
+          { year: "Early 60s", title: "A Royal Union", desc: "The beginning of the Jorwal Parivaar." },
+          { year: "1981", title: "Ramhari Meena", desc: "Birth of Ramhari Meena, a new pillar for the family." },
+          { year: "1983", title: "The Ancestral Home", desc: "Dadaji built the physical foundation of our family in Rajasthan." },
+          { year: "Present", title: "The 4th Generation", desc: "The legacy continues through the successes of the grandchildren." }
+        ];
+
+        const familyUpdates = [
+            { id: 8, type: "celebration", title: "Lala's Update", desc: "Lala 3 baje so gaya dopeher me. Sukoon bhari neend!", date: "9 March" },
+            { id: 7, type: "celebration", title: "T20 World Cup Victory", desc: "INDIA WON T20 WORLD Cup! Historic moment celebrated by the whole family.", date: "8 March" },
+            { id: 6, type: "success", title: "PNB Selection", desc: "Abhishek Jorwal selected as Customer Service Associate in Punjab National Bank. Abhishek Jorwal shines again!", date: "2 March" },
+            { id: 5, type: "success", title: "SBI Selection", desc: "Abhishek Jorwal selected as Junior Associate in State Bank of India. Incredible achievement!", date: "27 Feb" }
+        ];
+
+        // --- HELPERS ---
+        const getAllMembers = (data) => {
+          let members = [];
+          if (!data) return members;
+          const traverse = (node) => {
+            if (node.parents) members.push(...node.parents);
+            if (node.children) node.children.forEach(traverse);
+          };
+          traverse(data);
+          return members;
+        };
+
+        const getUpcomingFilteredEvents = (events) => {
+          if (!events || events.length === 0) return [];
+          const now = new Date();
+          const ninetyDaysFromNow = new Date();
+          ninetyDaysFromNow.setDate(now.getDate() + 90);
+          return events
+            .map(event => {
+              const [dayStr, monthStr] = event.date.split(' ');
+              const monthNamesArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+              const monthIndex = monthNamesArr.indexOf(monthStr);
+              let eventDate = new Date(now.getFullYear(), monthIndex, parseInt(dayStr));
+              if (eventDate < new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
+                eventDate.setFullYear(now.getFullYear() + 1);
+              }
+              return { ...event, absoluteDate: eventDate };
+            })
+            .filter(event => {
+              const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+              return event.absoluteDate >= today && event.absoluteDate <= ninetyDaysFromNow;
+            })
+            .sort((a, b) => a.absoluteDate - b.absoluteDate);
+        };
+
+        // --- MAIN APP ---
+        function App() {
+          const [selectedMember, setSelectedMember] = useState(null);
+          const [selectedLocation, setSelectedLocation] = useState(null);
+          const [scrolled, setScrolled] = useState(false);
+          const [searchQuery, setSearchQuery] = useState("");
+          const [isDarkMode, setIsDarkMode] = useState(false);
+
+          // Local State for interactive features (No Database)
+          const [messages, setMessages] = useState([]);
+          const [newMessage, setNewMessage] = useState({ name: '', text: '' });
+          
+          const [activePoll, setActivePoll] = useState({
+            id: 'poll_1',
+            question: "Agla Parivaar Get-together kahan hona chahiye?",
+            options: [{ text: "Jaipur", votes: 5 }, { text: "Jodhpura", votes: 3 }, { text: "Delhi", votes: 2 }]
+          });
+          const [hasVoted, setHasVoted] = useState(localStorage.getItem('jorwal_voted_poll') === 'poll_1');
+
+          const allMembers = useMemo(() => getAllMembers(familyTreeData), []);
+          const upcomingUtsavs = useMemo(() => getUpcomingFilteredEvents(allParivaarEvents), []);
+          
+          const uniqueLocations = useMemo(() => {
+            const locs = {}; 
+            allMembers.forEach(m => { 
+                if (m.location) { 
+                    if (!locs[m.location]) locs[m.location] = []; 
+                    locs[m.location].push(m); 
+                } 
+            });
+            return locs;
+          }, [allMembers]);
+
+          const searchResults = useMemo(() => {
+            if (!searchQuery.trim()) return [];
+            const query = searchQuery.toLowerCase();
+            return allMembers.filter(m => m.name.toLowerCase().includes(query) || m.role.toLowerCase().includes(query) || m.location?.toLowerCase().includes(query));
+          }, [searchQuery, allMembers]);
+
+          useEffect(() => {
+            if (isDarkMode) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+          }, [isDarkMode]);
+
+          useEffect(() => {
+            const handleScroll = () => setScrolled(window.scrollY > 50);
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+          }, []);
+
+          useEffect(() => {
+            document.body.style.overflow = (selectedMember || selectedLocation) ? 'hidden' : 'auto';
+          }, [selectedMember, selectedLocation]);
+
+          // Local Chit-Chat Handlers
+          const handleSendMessage = () => {
+            if (!newMessage.name.trim() || !newMessage.text.trim()) return;
+            const newMsg = {
+                id: Date.now().toString(),
+                name: newMessage.name,
+                text: newMessage.text,
+                reactions: 0,
+                date: `${new Date().getDate()} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][new Date().getMonth()]}`
+            };
+            setMessages([newMsg, ...messages].slice(0, 20));
+            setNewMessage({ name: '', text: '' });
+          };
+
+          const handleReaction = (msgId) => {
+            setMessages(messages.map(m => m.id === msgId ? { ...m, reactions: (m.reactions || 0) + 1 } : m));
+          };
+
+          // Local Poll Handler
+          const handleVote = (optionIndex) => {
+            if (hasVoted) return;
+            const newOptions = [...activePoll.options];
+            newOptions[optionIndex].votes += 1;
+            setActivePoll({ ...activePoll, options: newOptions });
+            setHasVoted(true);
+            localStorage.setItem('jorwal_voted_poll', 'poll_1');
+          };
+
+          const PortraitCard = ({ member, isSmall = false }) => (
+            <div onClick={() => setSelectedMember(member)} className={`group cursor-pointer flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-3 relative z-10 ${isSmall ? 'w-24 sm:w-28 md:w-32' : 'w-28 sm:w-36 md:w-48'}`}>
+              <div className="relative w-full aspect-[3/4] mb-3 mt-4">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] via-[#AA771C] to-[#F3E5AB] rounded-t-full rounded-b-md blur-[2px] opacity-70 group-hover:opacity-100 transition-all"></div>
+                <div className="absolute inset-[2px] bg-gradient-to-b from-[#5C1616] to-[#2A0A0A] rounded-t-full rounded-b-md shadow-2xl z-10"></div>
+                <div className="absolute bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#2A0A0A] dark:to-[#1A0505] rounded-t-full rounded-b-sm border-2 border-[#D4AF37] z-20 inset-2 p-0.5 shadow-inner">
+                  <div className="w-full h-full rounded-t-full rounded-b-sm overflow-hidden relative bg-[#5C1616]/5 dark:bg-black/50">
+                    {member.image ? <img src={member.image} className="object-cover w-full h-full transform group-hover:scale-110 transition-all duration-700" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} /> : <div className="h-full flex items-center justify-center text-[10px] text-[#8B0000] dark:text-[#D4AF37] font-bold text-center p-2">Photo Bhejdo</div>}
+                  </div>
+                </div>
+              </div>
+              <h3 className="font-serif font-bold text-[#5C1616] dark:text-[#F3E5AB] leading-tight mb-1 text-xs md:text-lg">{member.name}</h3>
+              <p className="text-[#5C1616] dark:text-[#D4AF37]/80 font-bold uppercase tracking-widest truncate w-full px-2 text-[10px] md:text-xs py-0.5 border-y border-[#D4AF37]/20">{member.role}</p>
+            </div>
+          );
+
+          return (
+            <div className={`min-h-screen relative transition-colors duration-500 ${isDarkMode ? 'dark' : ''}`}>
+             <div className="pattern-bg text-[#4A1515] dark:text-[#F3E5AB] pb-10">
+              
+              <nav className={`fixed w-full z-[100] transition-all duration-500 ${scrolled ? 'bg-[#2A0A0A]/95 dark:bg-[#0a0202]/95 backdrop-blur-md py-4 border-b border-[#D4AF37]/50 text-[#F3E5AB]' : 'bg-gradient-to-b from-[#1A0505]/90 to-transparent py-6 text-[#F3E5AB]'}`}>
+                <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center">
+                  <div className="flex items-center space-x-2 md:space-x-3"><Icon name="flower-2" className="text-[#D4AF37] animate-[spin_10s_linear_infinite]" size={20} /><h1 className="font-serif text-lg md:text-2xl font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFF2CD] to-[#AA771C]">Jorwal Parivaar</h1></div>
+                  <div className="hidden lg:flex space-x-8 text-[0.65rem] md:text-xs font-bold tracking-[0.2em] uppercase items-center">
+                    <a href="#heritage" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Virasat</a>
+                    <a href="#utsav" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Utsav</a>
+                    <a href="#tree" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Vriksh</a>
+                    <a href="#map" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Map</a>
+                    <button onClick={() => setIsDarkMode(!isDarkMode)} className="ml-4 p-2 rounded-full border border-[#D4AF37] bg-black/30"><Icon name={isDarkMode ? 'sun' : 'moon'} size={16} className="text-[#D4AF37]" /></button>
+                  </div>
+                </div>
+              </nav>
+
+              <header id="heritage" className="relative h-[85vh] flex items-center justify-center overflow-hidden border-b-[6px] border-double border-[#D4AF37]">
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&q=80')" }}><div className="absolute inset-0 bg-gradient-to-b from-[#1A0505]/80 via-[#5C1616]/60 to-[#FFF9F0] dark:to-[#0a0202]" /></div>
+                <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20 border-[3px] border-[#D4AF37]/30 p-8 md:p-16 rounded-3xl backdrop-blur-sm bg-[#2A0A0A]/40 shadow-2xl">
+                  <h1 className="font-serif text-5xl md:text-8xl font-bold leading-tight mb-8 text-[#F3E5AB]">The Jorwal Parivaar</h1>
+                  <a href="#tree" className="bg-[#5C1616] text-[#F3E5AB] px-10 py-4 rounded-full font-bold tracking-widest border border-[#D4AF37] hover:scale-105 transition-all">View Directory</a>
+                </div>
+              </header>
+
+              <section id="utsav" className="max-w-6xl mx-auto py-16 px-6 -mt-10 relative z-20">
+                <div className="bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#1A0505] dark:to-[#2A0A0A] rounded-[2rem] border-[3px] border-[#D4AF37] shadow-xl p-8 flex flex-col md:flex-row gap-8">
+                    <div className="md:w-1/3"><span className="text-[#8B0000] dark:text-[#D4AF37] font-bold uppercase tracking-widest text-xs">Utsav</span><h2 className="font-serif text-3xl font-bold dark:text-white">Upcoming Events</h2></div>
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {upcomingUtsavs.map(u => (
+                            <div key={u.id} className="bg-white/40 dark:bg-black/40 p-4 rounded-xl border border-[#D4AF37]/40 flex items-center gap-4">
+                                <Icon name={u.type === 'birthday' ? 'cake' : 'heart'} size={20} className="text-[#8B0000] dark:text-[#D4AF37]" />
+                                <div><p className="text-xs font-bold text-[#8B0000] dark:text-[#D4AF37]">{u.date}</p><p className="text-sm font-serif font-bold dark:text-white">{u.event}</p></div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+              </section>
+
+              <section id="journey" className="max-w-5xl mx-auto py-20 px-6 relative z-20">
+                <h2 className="font-serif text-4xl font-bold text-center mb-12 dark:text-white">Our Journey (Itihas)</h2>
+                <div className="relative border-l-4 border-[#D4AF37] ml-4 md:ml-0 md:border-l-0 md:flex md:flex-col items-center">
+                    {journeyData.map((j, i) => (
+                        <div key={i} className={`mb-12 relative w-full md:w-1/2 ${i % 2 === 0 ? 'md:ml-auto md:pl-10' : 'md:mr-auto md:pr-10 md:text-right'}`}>
+                            <div className="absolute top-0 -left-6 md:left-1/2 md:-translate-x-1/2 w-4 h-4 bg-[#5C1616] border-2 border-[#D4AF37] rounded-full z-10"></div>
+                            <div className="bg-white/80 dark:bg-[#1A0505]/80 p-6 rounded-2xl border border-[#D4AF37]/30 shadow-md">
+                                <span className="text-[#D4AF37] font-black text-2xl opacity-40">{j.year}</span><h3 className="font-serif font-bold text-lg dark:text-white">{j.title}</h3><p className="text-sm dark:text-[#F3E5AB]/70">{j.desc}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+              </section>
+
+              <main id="tree" className="max-w-6xl mx-auto py-20 px-6 relative z-20 text-center">
+                {searchQuery ? (
+                    <div className="bg-[#FFF9F0]/80 dark:bg-[#0a0202]/80 backdrop-blur-md rounded-[3rem] p-8 border-[3px] border-[#D4AF37]/40 shadow-xl min-h-[400px]">
+                        <h2 className="font-serif text-3xl font-bold text-center mb-8 dark:text-[#D4AF37]">Search Results</h2>
+                        <div className="flex flex-wrap justify-center items-start gap-8">{searchResults.map(m => <PortraitCard key={m.id} member={m} />)}</div>
+                    </div>
+                ) : (
+                    <>
+                        <h2 className="font-serif text-5xl md:text-7xl font-bold mb-16 dark:text-white">Vansh Vriksh</h2>
+                        <div className="flex flex-wrap justify-center gap-10">{familyTreeData?.parents?.map(p => <PortraitCard key={p.id} member={p} />)}</div>
+                        <div className="space-y-32 mt-32">
+                            {familyTreeData?.children?.map((branch, idx) => (
+                                <div key={branch.id} className="bg-[#FFF9F0]/90 dark:bg-[#1A0505]/80 p-8 md:p-14 rounded-[3rem] border-[3px] border-[#D4AF37]/40 shadow-2xl relative">
+                                    <div className="bg-[#2A0A0A] text-[#F3E5AB] px-8 py-2 rounded-full inline-block mb-10 text-xs font-bold uppercase tracking-widest border border-[#D4AF37]">Branch {idx + 1}</div>
+                                    <div className="flex flex-wrap justify-center gap-8 mb-16">{branch.parents.map(p => <PortraitCard key={p.id} member={p} />)}</div>
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                        {branch.children.map(child => (
+                                            <div key={child.id} className="bg-white/50 dark:bg-black/40 p-6 rounded-[2rem] border border-[#D4AF37]/30 shadow-xl flex flex-col items-center">
+                                                <div className="flex justify-center gap-6">{child.parents.map(p => <PortraitCard key={p.id} member={p} isSmall />)}</div>
+                                                {child.children.length > 0 && <div className="mt-6 flex flex-wrap justify-center gap-4 p-4 rounded-3xl bg-[#FFF9F0]/50 dark:bg-black/20 w-full">{child.children.map(gc => gc.parents.map(p => <PortraitCard key={p.id} member={p} isSmall />))}</div>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
+              </main>
+
+              <section id="map" className="max-w-6xl mx-auto py-16 px-6 relative z-20">
+                <div className="bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#1A0505] dark:to-black rounded-[3rem] border-[3px] border-[#D4AF37]/40 shadow-2xl p-10 text-center">
+                  <h2 className="font-serif text-4xl font-bold dark:text-[#F3E5AB] mb-10">Where Are We?</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    {Object.keys(uniqueLocations).map((loc) => (
+                      <div key={loc} onClick={() => setSelectedLocation(loc)} className="bg-white/70 dark:bg-[#2A0A0A] p-6 rounded-3xl border-2 border-[#D4AF37]/30 cursor-pointer hover:scale-105 transition-all">
+                        <Icon name="map-pin" className="text-[#8B0000] dark:text-[#D4AF37] mx-auto mb-2" size={24} />
+                        <h3 className="font-serif font-bold dark:text-white">{loc}</h3>
+                        <p className="text-xs text-[#8B0000] dark:text-[#D4AF37] font-bold uppercase">{uniqueLocations[loc].length} Members</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              <section id="polls" className="max-w-4xl mx-auto py-16 px-6 relative z-20">
+                <div className="bg-[#FFF9F0] dark:bg-[#1A0505] p-10 rounded-[3rem] border-[3px] border-[#D4AF37] shadow-xl text-center">
+                    <Icon name="vote" className="text-[#8B0000] dark:text-[#D4AF37] mx-auto mb-4" size={32} />
+                    <h2 className="font-serif text-3xl font-bold dark:text-white mb-8">Parivaar Live Poll</h2>
+                    {activePoll && (
+                        <div className="space-y-4 max-w-sm mx-auto">
+                            <p className="font-bold dark:text-white mb-4">{activePoll.question}</p>
+                            {activePoll.options.map((opt, idx) => {
+                                const total = activePoll.options.reduce((a, c) => a + c.votes, 0);
+                                const percent = total > 0 ? Math.round((opt.votes/total)*100) : 0;
+                                const isVoted = hasVoted === activePoll.id;
+                                return (
+                                    <div key={idx} className="relative">
+                                        <button disabled={isVoted} onClick={() => handleVote(idx)} className="w-full p-4 rounded-xl border-2 border-[#D4AF37]/40 relative z-10 font-bold dark:text-white flex justify-between">
+                                            <span>{opt.text}</span>{isVoted && <span>{percent}%</span>}
+                                        </button>
+                                        {isVoted && <div className="absolute inset-y-0 left-0 bg-[#D4AF37]/20 rounded-xl transition-all duration-1000" style={{width: `${percent}%`}}></div>}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+              </section>
+
+              <section id="chitchat" className="max-w-6xl mx-auto py-16 px-6 relative z-20">
+                <div className="bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#1A0505] dark:to-black rounded-[3rem] border-[3px] border-[#D4AF37]/40 p-10">
+                    <h2 className="font-serif text-3xl md:text-5xl text-center dark:text-white mb-10">Chitthi-Patri</h2>
+                    <div className="flex flex-col md:flex-row gap-10">
+                        <div className="md:w-1/3 space-y-4"><input type="text" placeholder="Your Name" value={newMessage.name} onChange={e => setNewMessage({...newMessage, name: e.target.value})} className="w-full p-4 rounded-xl bg-white dark:bg-black border border-[#D4AF37]/50 dark:text-white" /><textarea placeholder="Your Message" value={newMessage.text} onChange={e => setNewMessage({...newMessage, text: e.target.value})} className="w-full p-4 rounded-xl h-32 border border-[#D4AF37]/50 dark:text-white bg-white dark:bg-black"></textarea><button onClick={handleSendMessage} className="w-full bg-[#5C1616] text-[#F3E5AB] py-4 rounded-xl font-bold uppercase shadow-lg">Post Message</button></div>
+                        <div className="flex-1 h-[400px] overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+                            {messages.length === 0 && <div className="text-center opacity-50 mt-10 italic dark:text-white">Be the first to write a message!</div>}
+                            {messages.map(m => (
+                            <div key={m.id} className="bg-white dark:bg-black/50 p-6 rounded-2xl border-l-4 border-[#D4AF37] shadow-sm"><div className="flex justify-between mb-2"><span className="font-bold text-[#8B0000] dark:text-[#D4AF37]">{m.name}</span><span className="text-[10px] uppercase font-bold opacity-50 dark:text-white">{m.date}</span></div><p className="text-sm dark:text-white mb-4">{m.text}</p><button onClick={() => handleReaction(m.id)} className="flex items-center gap-1.5 text-[#8B0000] dark:text-[#D4AF37] text-xs font-bold"><Icon name="heart" size={14} className={m.reactions > 0 ? "fill-current" : ""}/> {m.reactions || 0}</button></div>
+                        ))}</div>
+                    </div>
+                </div>
+              </section>
+
+              <footer className="bg-[#1A0505] text-[#F3E5AB] py-20 text-center border-t-[8px] border-double border-[#D4AF37]">
+                <Icon name="flower-2" className="text-[#D4AF37] mx-auto mb-6 animate-spin-slow" size={48} /><p className="font-serif text-4xl md:text-5xl font-bold tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFF2CD] to-[#AA771C]">Jorwal Parivaar</p>
+                <p className="text-sm tracking-[0.5em] uppercase text-[#D4AF37]/90 mt-4">॥ वसुधैव कुटुम्बकम् ॥</p>
+              </footer>
+
+              {selectedMember && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4"><div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedMember(null)}></div>
+                  <div className="relative w-full max-w-5xl bg-[#FFF9F0] dark:bg-[#1A0505] border-[6px] border-[#D4AF37] rounded-3xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+                    <button onClick={() => setSelectedMember(null)} className="absolute top-6 right-6 z-[210] text-[#D4AF37] p-2 bg-black rounded-full border border-[#D4AF37]"><Icon name="x" size={24} /></button>
+                    <div className="w-full md:w-2/5 bg-[#5C1616] p-8 flex items-center justify-center relative overflow-hidden"><div className="relative w-full aspect-[3/4] max-w-[320px] z-10"><div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#F3E5AB] rounded-t-full rounded-b-md shadow-2xl"></div><div className="absolute inset-[4px] bg-[#2A0A0A] rounded-t-full rounded-b-md overflow-hidden">{selectedMember.image ? <img src={selectedMember.image} className="w-full h-full object-cover" /> : <div className="h-full flex items-center justify-center text-[#F3E5AB] font-bold">Photo Bhejdo</div>}</div></div></div>
+                    <div className="w-full md:w-3/5 p-8 md:p-14 overflow-y-auto custom-scrollbar relative bg-[#FFF9F0] dark:bg-[#1A0505] modal-main-container">
+                        <span className="text-[#8B0000] dark:text-[#D4AF37] font-bold tracking-widest uppercase text-xs border-b-2 border-[#D4AF37] inline-block mb-4">{selectedMember.role}</span>
+                        <h2 className="font-serif text-4xl md:text-6xl font-bold dark:text-[#F3E5AB] mb-6">{selectedMember.name}</h2>
+                        <p className="text-xl dark:text-[#F3E5AB]/80 leading-relaxed font-medium mb-10">{selectedMember.bio || "A vital part of the Jorwal Parivaar legacy."}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-10 border-t-2 border-dashed border-[#D4AF37]/30">
+                            <div className="flex items-start space-x-4"><Icon name="briefcase" size={24} className="text-[#8B0000] dark:text-[#D4AF37]"/><div className="font-bold dark:text-white">{selectedMember.profession}</div></div>
+                            <div className="flex items-start space-x-4"><Icon name="map-pin" size={24} className="text-[#8B0000] dark:text-[#D4AF37]"/><div className="font-bold dark:text-white">{selectedMember.location || "Rajasthan"}</div></div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {selectedLocation && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4"><div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedLocation(null)}></div>
+                  <div className="relative w-full max-w-4xl bg-[#FFF9F0] dark:bg-[#0a0202] border-[4px] border-[#D4AF37] rounded-[2rem] overflow-hidden flex flex-col max-h-[85vh]">
+                    <button onClick={() => setSelectedLocation(null)} className="absolute top-6 right-6 z-[210] text-[#D4AF37] p-2 bg-black rounded-full border border-[#D4AF37]"><Icon name="x" size={20} /></button>
+                    <div className="p-8 border-b-2 border-[#D4AF37]/30 text-center dark:bg-[#1A0505]"><h2 className="font-serif text-3xl font-bold dark:text-[#F3E5AB]">{selectedLocation}</h2></div>
+                    <div className="p-10 overflow-y-auto custom-scrollbar flex flex-wrap justify-center gap-8 bg-white/50 dark:bg-black/50">{uniqueLocations[selectedLocation].map(m => <PortraitCard key={m.id} member={m} isSmall />)}</div>
+                  </div>
+                </div>
+              )}
+             </div>
+            </div>
+          );
+        }
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
