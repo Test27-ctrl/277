@@ -839,20 +839,20 @@
                         </div>
 
                         {/* Messages List */}
-                        <div className="flex-1 h-[400px] md:h-[500px] overflow-y-auto space-y-4 md:space-y-6 pr-2 md:pr-4 custom-scrollbar">
+                        <div className="flex-1 h-[400px] md:h-[500px] overflow-y-auto space-y-3 md:space-y-4 pr-2 md:pr-4 custom-scrollbar">
                             {messages.length === 0 && <div className="text-center opacity-50 mt-10 md:mt-20 font-serif text-lg md:text-2xl italic dark:text-royal-gold">Be the first to write a message!</div>}
                             {messages.map((m, index) => (
-                                <div key={m.id} className={`bg-white/95 dark:bg-royal-dark/90 p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border-2 border-royal-gold/40 shadow-sm md:shadow-md relative md:hover:shadow-xl transition-all ${index % 2 === 0 ? 'ml-0 md:mr-10' : 'mr-0 md:ml-10'}`}>
-                                    <Icon name="quote" className="absolute top-4 right-4 md:top-6 md:right-6 text-royal-gold/10 w-8 h-8 md:w-12 md:h-12 rotate-180 pointer-events-none" />
-                                    <div className="flex justify-between items-start mb-2 md:mb-4 relative z-10">
-                                        <span className="font-serif font-bold text-lg md:text-2xl text-royal-crimson dark:text-royal-gold">{m.name}</span>
-                                        <span className="text-[8px] md:text-[10px] uppercase font-bold text-royal-maroon/60 dark:text-royal-lightgold/60 border border-royal-gold/30 rounded-full px-2 py-0.5 md:px-3 md:py-1">{m.date}</span>
+                                <div key={m.id} className={`bg-white/95 dark:bg-royal-dark/90 p-4 md:p-5 rounded-xl md:rounded-2xl border-2 border-royal-gold/40 shadow-sm relative md:hover:shadow-md transition-all ${index % 2 === 0 ? 'ml-0 md:mr-6' : 'mr-0 md:ml-6'}`}>
+                                    <Icon name="quote" className="absolute top-3 right-3 md:top-4 md:right-4 text-royal-gold/10 w-6 h-6 md:w-10 md:h-10 rotate-180 pointer-events-none" />
+                                    <div className="flex justify-between items-start mb-2 md:mb-3 relative z-10">
+                                        <span className="font-serif font-bold text-base md:text-xl text-royal-crimson dark:text-royal-gold">{m.name}</span>
+                                        <span className="text-[8px] md:text-[9px] uppercase font-bold text-royal-maroon/60 dark:text-royal-lightgold/60 border border-royal-gold/30 rounded-full px-2 py-0.5 md:px-2.5 md:py-0.5 mt-0.5">{m.date}</span>
                                     </div>
-                                    <p className="text-sm md:text-base dark:text-white mb-4 md:mb-6 relative z-10 leading-snug md:leading-relaxed">{m.text}</p>
+                                    <p className="text-sm md:text-base dark:text-white mb-3 md:mb-4 relative z-10 leading-snug">{m.text}</p>
                                     <div className="flex justify-end relative z-10">
-                                        <button onClick={() => handleReaction(m.id)} className="flex items-center gap-1.5 md:gap-2 bg-royal-cream dark:bg-black px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-royal-gold/50 text-royal-crimson dark:text-royal-gold md:hover:bg-royal-gold/20 transition-colors">
-                                            <Icon name="heart" size={14} className={`md:w-[18px] md:h-[18px] ${m.reactions > 0 ? "fill-current" : ""}`}/> 
-                                            <span className="font-bold text-xs md:text-base">{m.reactions || 0}</span>
+                                        <button onClick={() => handleReaction(m.id)} className="flex items-center gap-1.5 bg-royal-cream dark:bg-black px-3 py-1 md:px-3.5 md:py-1.5 rounded-full border border-royal-gold/50 text-royal-crimson dark:text-royal-gold md:hover:bg-royal-gold/20 transition-colors">
+                                            <Icon name="heart" size={14} className={`w-3.5 h-3.5 md:w-4 md:h-4 ${m.reactions > 0 ? "fill-current" : ""}`}/> 
+                                            <span className="font-bold text-xs md:text-sm">{m.reactions || 0}</span>
                                         </button>
                                     </div>
                                 </div>
