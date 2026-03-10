@@ -256,6 +256,13 @@
           { year: "Present", title: "The 4th Generation", desc: "The legacy continues through the successes of the grandchildren." }
         ];
 
+        const familyUpdates = [
+          { id: 1, text: "Abhishek Jorwal cleared SBI JA exam! 🏆", date: "Recent" },
+          { id: 2, text: "Abhishek Jorwal cleared IBPS CSA exam! 🎉", date: "Recent" },
+          { id: 3, text: "Lala kal dopeher me 3 baje soke 5 baje utha 😴", date: "Recent" },
+          { id: 4, text: "Reyansh ne Lala ke bohot tez thappad maara 👋😂", date: "Recent" }
+        ];
+
         // --- HELPERS ---
         const getAllMembers = (data) => {
           let members = [];
@@ -680,7 +687,7 @@
                           <div className="absolute bottom-2 right-2 w-12 h-12 md:w-24 md:h-24 border-b-[3px] border-r-[3px] md:border-b-[6px] md:border-r-[6px] border-double border-royal-gold rounded-br-[1.5rem] md:rounded-br-[3.5rem] opacity-80 pointer-events-none"></div>
 
                           <div className="text-center mb-12 md:mb-16 relative mt-6 md:mt-0">
-                            <div className="absolute -top-12 md:-top-20 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-royal-dark via-black to-royal-dark text-royal-lightgold px-8 py-2 md:px-12 md:py-4 rounded-full text-xs md:text-base font-bold uppercase tracking-[0.2em] md:tracking-[0.4em] border-[3px] md:border-[4px] border-double border-royal-gold shadow-xl z-20 whitespace-nowrap">
+                            <div className="absolute -top-12 md:-top-20 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-royal-dark via-black to-royal-dark text-royal-lightgold px-8 py-2 md:px-12 py-4 rounded-full text-xs md:text-base font-bold uppercase tracking-[0.2em] md:tracking-[0.4em] border-[3px] md:border-[4px] border-double border-royal-gold shadow-xl z-20 whitespace-nowrap">
                               Branch {index + 1}
                             </div>
                             
@@ -767,6 +774,29 @@
                       </div>
                     ))}
                   </div>
+                </div>
+              </section>
+
+              {/* Updates Section (Parivaar Ki Taaza Khabar) */}
+              <section id="updates" className="max-w-4xl mx-auto py-12 md:py-16 px-4 md:px-6 relative z-20">
+                <div className="bg-royal-cream dark:bg-royal-dark p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] border-[4px] md:border-[6px] border-double border-royal-maroon dark:border-royal-gold shadow-xl md:shadow-2xl text-center relative overflow-hidden">
+                    <Icon name="bell" className="text-royal-crimson dark:text-royal-gold mx-auto mb-4 md:mb-6 w-8 h-8 md:w-10 md:h-10" />
+                    <h2 className="font-serif text-2xl md:text-4xl font-bold text-royal-dark dark:text-white mb-2 md:mb-4">परिवार की ताज़ा ख़बर</h2>
+                    <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-bold text-royal-maroon/60 dark:text-royal-gold/60 mb-8 md:mb-10 border-b border-royal-gold/30 inline-block pb-1 md:pb-2">Milestones & Updates</p>
+
+                    <div className="space-y-4 max-w-2xl mx-auto text-left">
+                        {familyUpdates.map(update => (
+                            <div key={update.id} className="flex items-center gap-4 bg-white/60 dark:bg-black/30 p-4 md:p-5 rounded-xl md:rounded-2xl border border-royal-gold/30 hover:border-royal-gold/60 transition-colors shadow-sm">
+                                <div className="bg-gradient-to-br from-royal-maroon to-royal-crimson text-royal-gold p-2.5 md:p-3 rounded-full flex-shrink-0 shadow-md">
+                                    <Icon name="sparkles" className="w-4 h-4 md:w-5 md:h-5" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="font-serif font-bold text-sm md:text-lg text-royal-dark dark:text-white leading-tight">{update.text}</p>
+                                    <span className="text-[9px] md:text-[10px] text-royal-crimson dark:text-royal-gold uppercase tracking-wider font-bold mt-1.5 inline-block">{update.date}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
               </section>
 
