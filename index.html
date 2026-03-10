@@ -31,6 +31,19 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Firebase Modules -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, onSnapshot, addDoc, updateDoc, increment, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        window.Firebase = {
+            initializeApp, getAuth, signInAnonymously, onAuthStateChanged,
+            getFirestore, collection, doc, setDoc, getDoc, onSnapshot, addDoc, updateDoc, increment, query, orderBy, limit
+        };
+        window.dispatchEvent(new Event('firebase-loaded'));
+    </script>
+
     <style>
         html { scroll-behavior: smooth; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFF9F0; overflow-x: hidden; width: 100%; transition: background-color 0.5s ease; }
@@ -156,8 +169,8 @@
                 ],
                 children: [
                   { id: 'c3-1', parents: [{ id: 'g3-10', name: "Abhishek Jorwal", role: "Grandson", image: "https://lh3.googleusercontent.com/pw/AP1GczN-qVMbRGqXjWXsrtBb5rATV_XfHQMNW8sKy6kBsGLNgMQXSVDvdKmJEX4zm5o8xeYcrFGewj2wYmAdJMiWVEvoam5i_OKbQwtzhpiaETvVDSCsI2sfy-bfYDprtZiLyq0XarT0TvtAjA1DUQsKOUWk4A=w747-h863-s-no-gm?authuser=0", birthday: "13 October 2003", profession: "SBI JA", location: "Jaipur" }], children: [] },
-                  { id: 'c3-2', parents: [{ id: 'g3-11', name: "Shivani Jorwal", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczPygGljoGWnkEsjPgJfYKjvWFnDOqph3ydGCngTXTJaIQD7K-ozoXztg8IW5skzOYtVm8RC--w-uZ9gTesvQm3WFTqa5l3M_pdNUHO-sQcS_Yez7RjASrp8w2TtpFLQUh_V4kCWRse8yt0pavPtpokHog=w647-h863-s-no-gm?authuser=0", birthday: "20 December 2007", location: "Bengaluru" }], children: [] },
-                  { id: 'c3-3', parents: [{ id: 'g3-12', name: "Ankita Jorwal", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczMQfCSXCham2A3YuG9Iw4KOylbKr2K6qoMM_-im4kGVwcB5dxhrVxjoEQBgCfIUb__GnCFaLJ-0omiqqgiEZfd0nUxEtf-fgF8bKUB_OyFCRCUkk-vUNnWqfay_N34dJB-dBHq8M2mldtRbEEOvDeWdkA=w665-h863-s-no-gm?authuser=0", birthday: "15 February 2009", location: "Bengaluru" }], children: [] }
+                  { id: 'c3-2', parents: [{ id: 'g3-11', name: "Shivani Jorwal", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczPygGljoGWnkEsjPgJfYKjvWFnDOqph3ydGCngTXTJaIQD7K-ozoXztg8IW5skzOYtVm8RC--w-uZ9gTesvQm3WFTqa5l3M_pdNUHO-sQcS_Yez7RjASrp8w2TtpFLQUh_V4kCWRse8yt0pavPtpokHog=w647-h863-s-no-gm?authuser=0", birthday: "20 December 2007", profession: "Student", location: "Bengaluru" }], children: [] },
+                  { id: 'c3-3', parents: [{ id: 'g3-12', name: "Ankita Jorwal", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczMQfCSXCham2A3YuG9Iw4KOylbKr2K6qoMM_-im4kGVwcB5dxhrVxjoEQBgCfIUb__GnCFaLJ-0omiqqgiEZfd0nUxEtf-fgF8bKUB_OyFCRCUkk-vUNnWqfay_N34dJB-dBHq8M2mldtRbEEOvDeWdkA=w665-h863-s-no-gm?authuser=0", birthday: "15 February 2009", profession: "Student", location: "Bengaluru" }], children: [] }
                 ]
               }
           ]
@@ -193,13 +206,6 @@
           { year: "1981", title: "Ramhari Meena", desc: "Birth of Ramhari Meena, a new pillar for the family." },
           { year: "1983", title: "The Ancestral Home", desc: "Dadaji built the physical foundation of our family in Rajasthan." },
           { year: "Present", title: "The 4th Generation", desc: "The legacy continues through the successes of the grandchildren." }
-        ];
-
-        const familyUpdates = [
-            { id: 8, type: "celebration", title: "Lala's Update", desc: "Lala 3 baje so gaya dopeher me. Sukoon bhari neend!", date: "9 March" },
-            { id: 7, type: "celebration", title: "T20 World Cup Victory", desc: "INDIA WON T20 WORLD Cup! Historic moment celebrated by the whole family.", date: "8 March" },
-            { id: 6, type: "success", title: "PNB Selection", desc: "Abhishek Jorwal selected as Customer Service Associate in Punjab National Bank. Abhishek Jorwal shines again!", date: "2 March" },
-            { id: 5, type: "success", title: "SBI Selection", desc: "Abhishek Jorwal selected as Junior Associate in State Bank of India. Incredible achievement!", date: "27 Feb" }
         ];
 
         // --- HELPERS ---
@@ -245,16 +251,114 @@
           const [searchQuery, setSearchQuery] = useState("");
           const [isDarkMode, setIsDarkMode] = useState(false);
 
-          // Local State for interactive features (No Database)
+          // FIREBASE LIVE STATE
+          const [firebaseLoaded, setFirebaseLoaded] = useState(!!window.Firebase);
+          const [user, setUser] = useState(null);
           const [messages, setMessages] = useState([]);
           const [newMessage, setNewMessage] = useState({ name: '', text: '' });
           
           const [activePoll, setActivePoll] = useState({
-            id: 'poll_1',
+            id: 'default_poll',
             question: "Agla Parivaar Get-together kahan hona chahiye?",
             options: [{ text: "Jaipur", votes: 5 }, { text: "Jodhpura", votes: 3 }, { text: "Delhi", votes: 2 }]
           });
-          const [hasVoted, setHasVoted] = useState(localStorage.getItem('jorwal_voted_poll') === 'poll_1');
+          const [hasVoted, setHasVoted] = useState(localStorage.getItem('jorwal_voted_poll') || null);
+
+          // =========================================================================
+          // 🔥 FIREBASE CONFIGURATION ADDED HERE 🔥
+          // =========================================================================
+          const myFirebaseConfig = {
+            apiKey: "AIzaSyBjfa8zr8ChKnwbosAcEL2HSRAgcvUo9vU",
+            authDomain: "test277-ef577.firebaseapp.com",
+            projectId: "test277-ef577",
+            storageBucket: "test277-ef577.firebasestorage.app",
+            messagingSenderId: "172252350816",
+            appId: "1:172252350816:web:b00ee79e0bdc1fad16b605",
+            measurementId: "G-FMES9870FG"
+          };
+
+          // 2. Initialize Firebase for the interactive features
+          useEffect(() => {
+            if (!firebaseLoaded) return;
+            const { initializeApp, getFirestore, getAuth, signInAnonymously } = window.Firebase;
+            try {
+                const app = initializeApp(myFirebaseConfig);
+                window.db = getFirestore(app);
+                
+                // Allow users to post without passwords
+                setUser({ uid: 'anon_' + Date.now() });
+                signInAnonymously(getAuth(app)).catch((err) => console.log("Auth issue (can be ignored in test mode):", err));
+            } catch (error) { 
+                console.error("Firebase Init Error:", error); 
+            }
+          }, [firebaseLoaded]);
+
+          // 3. Listen to Live Messages & Polls from Database
+          useEffect(() => {
+              if (!user || !window.db) return;
+              const { collection, onSnapshot } = window.Firebase;
+              
+              const unsubChat = onSnapshot(collection(window.db, 'chitchat_messages'), (snapshot) => {
+                  const msgs = [];
+                  snapshot.forEach(doc => msgs.push({ id: doc.id, ...doc.data() }));
+                  msgs.sort((a, b) => b.timestamp - a.timestamp);
+                  setMessages(msgs.slice(0, 20));
+              });
+
+              const unsubPoll = onSnapshot(collection(window.db, 'family_polls'), (snapshot) => {
+                  if (!snapshot.empty) {
+                      setActivePoll({ id: snapshot.docs[0].id, ...snapshot.docs[0].data() });
+                  }
+              });
+
+              return () => { unsubChat(); unsubPoll(); };
+          }, [user]);
+
+          // 4. Send Message to Database
+          const handleSendMessage = async () => {
+            if (!newMessage.name.trim() || !newMessage.text.trim() || !window.db) return;
+            const { collection, addDoc } = window.Firebase;
+            try {
+                await addDoc(collection(window.db, 'chitchat_messages'), {
+                    name: newMessage.name,
+                    text: newMessage.text,
+                    timestamp: Date.now(),
+                    reactions: 0,
+                    date: `${new Date().getDate()} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][new Date().getMonth()]}`
+                });
+                setNewMessage({ name: '', text: '' });
+            } catch (err) { console.error("Error posting message:", err); }
+          };
+
+          // 5. Update Reactions in Database
+          const handleReaction = async (msgId) => {
+            if (!window.db) return;
+            const { doc, updateDoc, increment } = window.Firebase;
+            try {
+                await updateDoc(doc(window.db, 'chitchat_messages', msgId), { reactions: increment(1) });
+            } catch (err) { console.error("Error updating reaction:", err); }
+          };
+
+          // 6. Update Poll in Database
+          const handleVote = async (optionIndex) => {
+            if (!window.db || !activePoll || hasVoted === activePoll.id) return;
+            const { doc, updateDoc } = window.Firebase;
+            
+            const newOptions = [...activePoll.options];
+            newOptions[optionIndex].votes += 1;
+            
+            try {
+                // If it's the default placeholder, don't break, just update state. 
+                // Once you create a poll in Firebase, this will update the DB.
+                if (activePoll.id !== 'default_poll') {
+                    await updateDoc(doc(window.db, 'family_polls', activePoll.id), { options: newOptions });
+                } else {
+                    setActivePoll({ ...activePoll, options: newOptions }); // local fallback
+                }
+                setHasVoted(activePoll.id);
+                localStorage.setItem('jorwal_voted_poll', activePoll.id);
+            } catch (err) { console.error("Error voting:", err); }
+          };
 
           const allMembers = useMemo(() => getAllMembers(familyTreeData), []);
           const upcomingUtsavs = useMemo(() => getUpcomingFilteredEvents(allParivaarEvents), []);
@@ -291,47 +395,45 @@
             document.body.style.overflow = (selectedMember || selectedLocation) ? 'hidden' : 'auto';
           }, [selectedMember, selectedLocation]);
 
-          // Local Chit-Chat Handlers
-          const handleSendMessage = () => {
-            if (!newMessage.name.trim() || !newMessage.text.trim()) return;
-            const newMsg = {
-                id: Date.now().toString(),
-                name: newMessage.name,
-                text: newMessage.text,
-                reactions: 0,
-                date: `${new Date().getDate()} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][new Date().getMonth()]}`
-            };
-            setMessages([newMsg, ...messages].slice(0, 20));
-            setNewMessage({ name: '', text: '' });
-          };
-
-          const handleReaction = (msgId) => {
-            setMessages(messages.map(m => m.id === msgId ? { ...m, reactions: (m.reactions || 0) + 1 } : m));
-          };
-
-          // Local Poll Handler
-          const handleVote = (optionIndex) => {
-            if (hasVoted) return;
-            const newOptions = [...activePoll.options];
-            newOptions[optionIndex].votes += 1;
-            setActivePoll({ ...activePoll, options: newOptions });
-            setHasVoted(true);
-            localStorage.setItem('jorwal_voted_poll', 'poll_1');
-          };
-
           const PortraitCard = ({ member, isSmall = false }) => (
-            <div onClick={() => setSelectedMember(member)} className={`group cursor-pointer flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-3 relative z-10 ${isSmall ? 'w-24 sm:w-28 md:w-32' : 'w-28 sm:w-36 md:w-48'}`}>
+            <div 
+              onClick={() => setSelectedMember(member)}
+              className={`group cursor-pointer flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-3 relative z-10 ${isSmall ? 'w-24 sm:w-28 md:w-32' : 'w-28 sm:w-36 md:w-48'}`}
+            >
               <div className="relative w-full aspect-[3/4] mb-3 mt-4">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] via-[#AA771C] to-[#F3E5AB] rounded-t-full rounded-b-md blur-[2px] opacity-70 group-hover:opacity-100 transition-all"></div>
-                <div className="absolute inset-[2px] bg-gradient-to-b from-[#5C1616] to-[#2A0A0A] rounded-t-full rounded-b-md shadow-2xl z-10"></div>
-                <div className="absolute bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#2A0A0A] dark:to-[#1A0505] rounded-t-full rounded-b-sm border-2 border-[#D4AF37] z-20 inset-2 p-0.5 shadow-inner">
-                  <div className="w-full h-full rounded-t-full rounded-b-sm overflow-hidden relative bg-[#5C1616]/5 dark:bg-black/50">
-                    {member.image ? <img src={member.image} className="object-cover w-full h-full transform group-hover:scale-110 transition-all duration-700" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} /> : <div className="h-full flex items-center justify-center text-[10px] text-[#8B0000] dark:text-[#D4AF37] font-bold text-center p-2">Photo Bhejdo</div>}
+                <div className={`absolute inset-0 bg-gradient-to-br from-[#D4AF37] via-[#AA771C] to-[#F3E5AB] rounded-t-full rounded-b-md blur-[3px] opacity-70 group-hover:opacity-100 group-hover:blur-[6px] transition-all duration-500`}></div>
+                <div className={`absolute inset-[2px] bg-gradient-to-b from-[#5C1616] to-[#2A0A0A] rounded-t-full rounded-b-md shadow-2xl border border-[#F3E5AB]/30 z-10`}></div>
+                
+                <div className={`absolute left-1/2 transform -translate-x-1/2 z-30 flex flex-col items-center ${isSmall ? '-top-4' : '-top-6'}`}>
+                  <div className={`bg-gradient-to-b from-[#F3E5AB] to-[#D4AF37] rounded-t-full ${isSmall ? 'w-1.5 h-2' : 'w-2 h-4'} shadow-sm`}></div>
+                  <div className={`bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#2A0A0A] dark:to-[#1A0505] rounded-full flex items-center justify-center shadow-[0_4px_10px_rgba(0,0,0,0.5)] border border-[#D4AF37] ${isSmall ? 'p-1' : 'p-1.5 border-[2px]'}`}>
+                    <Icon name="flower-2" className={`text-[#8B0000] dark:text-[#D4AF37] group-hover:rotate-180 transition-transform duration-700 ease-in-out ${isSmall ? 'w-3 h-3' : 'w-5 h-5'}`} size={isSmall ? 12 : 20} />
                   </div>
                 </div>
+
+                <div className={`absolute bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#2A0A0A] dark:to-[#1A0505] rounded-t-full rounded-b-sm border-2 border-[#D4AF37] z-20 ${isSmall ? 'inset-1.5 p-0.5' : 'inset-2.5 p-1'} shadow-[inset_0_4px_10px_rgba(0,0,0,0.4)]`}>
+                  <div className="w-full h-full rounded-t-full rounded-b-sm overflow-hidden relative border border-[#5C1616]/20 dark:border-[#D4AF37]/20 bg-[#5C1616]/5 dark:bg-black/50">
+                    {member.image ? (
+                      <img 
+                        src={member.image} 
+                        alt={member.name}
+                        className="object-cover w-full h-full sepia-[0.15] contrast-[1.1] group-hover:sepia-0 transform group-hover:scale-110 transition-all duration-700 ease-out"
+                        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                      />
+                    ) : null}
+                    <div className={`${member.image ? 'hidden' : 'flex'} w-full h-full items-center justify-center p-2 text-center`}>
+                      <span className={`font-bold text-[#8B0000] dark:text-[#D4AF37] opacity-70 ${isSmall ? 'text-[0.45rem] sm:text-[0.55rem] leading-tight' : 'text-[0.65rem] sm:text-xs leading-snug'}`}>Photo bhejdo<br/>acchi wali</span>
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#2A0A0A]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  </div>
+                </div>
+                
+                <div className="absolute -bottom-1 -left-1 w-3 h-3 md:w-3.5 md:h-3.5 rotate-45 bg-gradient-to-br from-[#F3E5AB] to-[#D4AF37] z-20 shadow-sm border border-[#5C1616]"></div>
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 md:w-3.5 md:h-3.5 rotate-45 bg-gradient-to-br from-[#F3E5AB] to-[#D4AF37] z-20 shadow-sm border border-[#5C1616]"></div>
               </div>
-              <h3 className="font-serif font-bold text-[#5C1616] dark:text-[#F3E5AB] leading-tight mb-1 text-xs md:text-lg">{member.name}</h3>
-              <p className="text-[#5C1616] dark:text-[#D4AF37]/80 font-bold uppercase tracking-widest truncate w-full px-2 text-[10px] md:text-xs py-0.5 border-y border-[#D4AF37]/20">{member.role}</p>
+              
+              <h3 className={`font-serif font-bold text-[#5C1616] dark:text-[#F3E5AB] leading-tight mb-1 drop-shadow-sm transition-colors group-hover:text-[#8B0000] dark:group-hover:text-[#D4AF37] ${isSmall ? 'text-[0.65rem] sm:text-xs' : 'text-xs sm:text-base md:text-xl'}`}>{member.name}</h3>
+              <p className={`text-[#5C1616] dark:text-[#D4AF37]/80 font-bold uppercase tracking-widest truncate w-full px-1 sm:px-2 bg-gradient-to-r from-transparent via-[#D4AF37]/20 dark:via-[#D4AF37]/10 to-transparent py-0.5 border-y border-[#D4AF37]/30 dark:border-[#D4AF37]/20 ${isSmall ? 'text-[0.5rem] sm:text-[0.55rem]' : 'text-[0.55rem] sm:text-[0.65rem] md:text-xs'}`}>{member.role}</p>
             </div>
           );
 
@@ -345,6 +447,7 @@
                   <div className="hidden lg:flex space-x-8 text-[0.65rem] md:text-xs font-bold tracking-[0.2em] uppercase items-center">
                     <a href="#heritage" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Virasat</a>
                     <a href="#utsav" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Utsav</a>
+                    <a href="#journey" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Itihas</a>
                     <a href="#tree" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Vriksh</a>
                     <a href="#map" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Map</a>
                     <button onClick={() => setIsDarkMode(!isDarkMode)} className="ml-4 p-2 rounded-full border border-[#D4AF37] bg-black/30"><Icon name={isDarkMode ? 'sun' : 'moon'} size={16} className="text-[#D4AF37]" /></button>
@@ -395,26 +498,101 @@
                         <div className="flex flex-wrap justify-center items-start gap-8">{searchResults.map(m => <PortraitCard key={m.id} member={m} />)}</div>
                     </div>
                 ) : (
-                    <>
-                        <h2 className="font-serif text-5xl md:text-7xl font-bold mb-16 dark:text-white">Vansh Vriksh</h2>
-                        <div className="flex flex-wrap justify-center gap-10">{familyTreeData?.parents?.map(p => <PortraitCard key={p.id} member={p} />)}</div>
-                        <div className="space-y-32 mt-32">
-                            {familyTreeData?.children?.map((branch, idx) => (
-                                <div key={branch.id} className="bg-[#FFF9F0]/90 dark:bg-[#1A0505]/80 p-8 md:p-14 rounded-[3rem] border-[3px] border-[#D4AF37]/40 shadow-2xl relative">
-                                    <div className="bg-[#2A0A0A] text-[#F3E5AB] px-8 py-2 rounded-full inline-block mb-10 text-xs font-bold uppercase tracking-widest border border-[#D4AF37]">Branch {idx + 1}</div>
-                                    <div className="flex flex-wrap justify-center gap-8 mb-16">{branch.parents.map(p => <PortraitCard key={p.id} member={p} />)}</div>
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                        {branch.children.map(child => (
-                                            <div key={child.id} className="bg-white/50 dark:bg-black/40 p-6 rounded-[2rem] border border-[#D4AF37]/30 shadow-xl flex flex-col items-center">
-                                                <div className="flex justify-center gap-6">{child.parents.map(p => <PortraitCard key={p.id} member={p} isSmall />)}</div>
-                                                {child.children.length > 0 && <div className="mt-6 flex flex-wrap justify-center gap-4 p-4 rounded-3xl bg-[#FFF9F0]/50 dark:bg-black/20 w-full">{child.children.map(gc => gc.parents.map(p => <PortraitCard key={p.id} member={p} isSmall />))}</div>}
-                                            </div>
-                                        ))}
-                                    </div>
+                  <>
+                    <div className="text-center mb-16 relative">
+                      <Icon name="flower-2" className="absolute top-1/2 left-0 text-[#D4AF37]/10 dark:text-[#D4AF37]/5 w-48 h-48 md:w-64 md:h-64 -translate-x-1/3 -translate-y-1/2 pointer-events-none animate-[spin_40s_linear_infinite]" size={200} />
+                      <div className="flex items-center justify-center space-x-6 mb-6 md:mb-8">
+                        <span className="text-[#8B0000] dark:text-[#D4AF37] font-bold tracking-[0.4em] uppercase text-xs md:text-sm">The Roots</span>
+                      </div>
+                      <h2 className="font-serif text-4xl md:text-7xl font-bold text-[#2A0A0A] dark:text-[#F3E5AB] mb-12 md:mb-16 drop-shadow-sm">Our Founders</h2>
+                      <div className="flex flex-wrap justify-center items-start gap-6 sm:gap-10 md:gap-24 relative z-10">
+                        {familyTreeData?.parents?.map(parent => <PortraitCard key={parent.id} member={parent} />)}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-center my-16 md:my-20">
+                      <div className="w-1.5 h-16 md:h-24 bg-gradient-to-b from-[#D4AF37] to-[#5C1616] dark:to-[#1A0505] rounded-full"></div>
+                      <div className="p-2 md:p-3 border-[3px] border-[#D4AF37] rounded-full my-4 bg-[#FFF9F0] dark:bg-[#0a0202]">
+                        <Icon name="flower-2" className="text-[#8B0000] dark:text-[#D4AF37] animate-[spin_12s_linear_infinite]" size={28} />
+                      </div>
+                      <div className="w-1.5 h-16 md:h-24 bg-gradient-to-b from-[#5C1616] dark:from-[#1A0505] to-transparent rounded-full"></div>
+                    </div>
+
+                    <div className="space-y-24 md:space-y-32">
+                      {familyTreeData?.children?.map((branch, index) => (
+                        <div key={branch.id} className="relative bg-[#FFF9F0]/90 dark:bg-[#1A0505]/80 backdrop-blur-md rounded-[2rem] md:rounded-[3rem] p-4 sm:p-6 md:p-14 border-[3px] border-[#D4AF37]/40 shadow-2xl transition-colors duration-500">
+                          <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 border-t-[5px] border-l-[5px] border-[#D4AF37] rounded-tl-[2rem] md:rounded-tl-[3rem] opacity-70"></div>
+                          <div className="absolute top-0 right-0 w-12 h-12 md:w-20 md:h-20 border-t-[5px] border-r-[5px] border-[#D4AF37] rounded-tr-[2rem] md:rounded-tr-[3rem] opacity-70"></div>
+                          <div className="absolute bottom-0 left-0 w-12 h-12 md:w-20 md:h-20 border-b-[5px] border-l-[5px] border-[#D4AF37] rounded-bl-[2rem] md:rounded-bl-[3rem] opacity-70"></div>
+                          <div className="absolute bottom-0 right-0 w-12 h-12 md:w-20 md:h-20 border-b-[5px] border-r-[5px] border-[#D4AF37] rounded-br-[2rem] md:rounded-br-[3rem] opacity-70"></div>
+
+                          <div className="text-center mb-8 md:mb-10 relative">
+                            <div className="absolute -top-8 md:-top-16 left-1/2 transform -translate-x-1/2 bg-[#2A0A0A] dark:bg-black text-[#F3E5AB] px-8 md:px-10 py-2 md:py-3 rounded-full text-xs md:text-sm font-bold uppercase tracking-[0.3em] border-[3px] border-[#D4AF37] shadow-xl z-20 whitespace-nowrap">
+                              Branch {index + 1}
+                            </div>
+                            
+                            <div className="flex justify-center items-start gap-4 sm:gap-6 md:gap-20 pt-8 md:pt-10 relative z-10">
+                              {branch.parents.map((parent, idx) => (
+                                <Fragment key={parent.id}>
+                                  <PortraitCard member={parent} />
+                                  {idx === 0 && branch.parents.length > 1 && (
+                                     <div className="flex items-center justify-center pt-16 md:pt-20 px-1 md:px-0">
+                                        <Icon name="heart" className="text-[#D4AF37] animate-pulse" size={32} />
+                                     </div>
+                                  )}
+                                </Fragment>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="w-full flex flex-col items-center mb-8 md:mb-12">
+                            <div className="w-1 h-8 md:h-12 bg-gradient-to-b from-[#D4AF37] to-transparent rounded-full"></div>
+                            <div className="p-1.5 md:p-2 border-2 border-[#D4AF37]/50 rounded-full my-1 bg-[#FFF9F0] dark:bg-black shadow-sm">
+                                <Icon name="heart" className="text-[#8B0000] dark:text-[#D4AF37]" size={16} />
+                            </div>
+                            <div className="w-1 h-8 md:h-12 bg-gradient-to-b from-transparent to-[#D4AF37] rounded-full"></div>
+                          </div>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12">
+                            {branch.children.map((childNode) => (
+                              <div key={childNode.id} className="bg-white dark:bg-black/40 rounded-[2rem] md:rounded-[2.5rem] p-4 sm:p-6 md:p-8 border-[2px] border-[#D4AF37]/30 shadow-xl flex flex-col items-center hover:-translate-y-1 transition-transform relative">
+                                
+                                <div className="flex justify-center items-start gap-2 sm:gap-4 md:gap-10 relative w-full z-10">
+                                  {childNode.parents.map((p, idx) => (
+                                     <Fragment key={p.id}>
+                                       <PortraitCard member={p} isSmall />
+                                       {idx === 0 && childNode.parents.length > 1 && (
+                                         <div className="flex items-center justify-center pt-10 md:pt-14 px-1 md:px-0">
+                                            <Icon name="heart" className="text-[#D4AF37]/60 animate-pulse" size={20} />
+                                         </div>
+                                       )}
+                                     </Fragment>
+                                  ))}
                                 </div>
+                                
+                                {childNode.children && childNode.children.length > 0 && (
+                                  <div className="w-full mt-2 md:mt-4 flex flex-col items-center">
+                                    <div className="flex flex-col items-center my-3 md:my-4">
+                                        <div className="w-0.5 h-4 md:h-6 bg-gradient-to-b from-[#D4AF37]/60 to-[#8B0000]/40 dark:to-[#D4AF37]/40"></div>
+                                        <div className="px-4 py-1 rounded-full bg-[#FFF9F0] dark:bg-[#1A0505] border border-[#D4AF37]/30 text-[0.55rem] md:text-[0.6rem] font-bold tracking-[0.2em] text-[#8B0000] dark:text-[#D4AF37] uppercase my-1 shadow-sm">
+                                          Their Children
+                                        </div>
+                                        <div className="w-0.5 h-4 md:h-6 bg-gradient-to-b from-[#8B0000]/40 dark:from-[#D4AF37]/40 to-[#D4AF37]/60"></div>
+                                    </div>
+                                    <div className="flex justify-center items-start gap-3 sm:gap-4 md:gap-6 flex-wrap bg-[#FFF9F0]/60 dark:bg-black/30 w-full p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border border-[#D4AF37]/10 shadow-inner">
+                                      {childNode.children.map(grandchildNode => (
+                                        grandchildNode.parents.map(gk => <PortraitCard key={gk.id} member={gk} isSmall />)
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             ))}
+                          </div>
                         </div>
-                    </>
+                      ))}
+                    </div>
+                  </>
                 )}
               </main>
 
@@ -478,17 +656,28 @@
               </footer>
 
               {selectedMember && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4"><div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedMember(null)}></div>
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                  <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedMember(null)}></div>
                   <div className="relative w-full max-w-5xl bg-[#FFF9F0] dark:bg-[#1A0505] border-[6px] border-[#D4AF37] rounded-3xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
-                    <button onClick={() => setSelectedMember(null)} className="absolute top-6 right-6 z-[210] text-[#D4AF37] p-2 bg-black rounded-full border border-[#D4AF37]"><Icon name="x" size={24} /></button>
-                    <div className="w-full md:w-2/5 bg-[#5C1616] p-8 flex items-center justify-center relative overflow-hidden"><div className="relative w-full aspect-[3/4] max-w-[320px] z-10"><div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#F3E5AB] rounded-t-full rounded-b-md shadow-2xl"></div><div className="absolute inset-[4px] bg-[#2A0A0A] rounded-t-full rounded-b-md overflow-hidden">{selectedMember.image ? <img src={selectedMember.image} className="w-full h-full object-cover" /> : <div className="h-full flex items-center justify-center text-[#F3E5AB] font-bold">Photo Bhejdo</div>}</div></div></div>
+                    <div className="absolute inset-1 md:inset-2 border-[3px] md:border-[4px] border-double border-[#D4AF37]/60 rounded-[1.5rem] md:rounded-2xl pointer-events-none z-20"></div>
+                    <button onClick={() => setSelectedMember(null)} className="absolute top-6 right-6 z-[210] text-[#D4AF37] p-2 bg-black rounded-full border border-[#D4AF37] hover:rotate-90 transition-all"><Icon name="x" size={24} /></button>
+                    <div className="w-full md:w-2/5 bg-[#5C1616] dark:bg-black p-8 flex items-center justify-center relative overflow-hidden">
+                       <Icon name="flower-2" className="absolute text-white/5 dark:text-[#D4AF37]/5 w-[150%] h-[150%] animate-[spin_30s_linear_infinite]" size={400} />
+                       <div className="relative w-[60%] sm:w-1/2 md:w-full aspect-[3/4] max-w-[280px] z-10">
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#F3E5AB] dark:to-[#8B0000] rounded-t-full rounded-b-md shadow-2xl"></div>
+                          <div className="absolute inset-[3px] md:inset-[4px] bg-[#2A0A0A] rounded-t-full rounded-b-md overflow-hidden">
+                            {selectedMember.image ? <img src={selectedMember.image} className="w-full h-full object-cover" /> : <div className="h-full flex items-center justify-center text-[#F3E5AB] font-bold">Photo Bhejdo</div>}
+                          </div>
+                       </div>
+                    </div>
                     <div className="w-full md:w-3/5 p-8 md:p-14 overflow-y-auto custom-scrollbar relative bg-[#FFF9F0] dark:bg-[#1A0505] modal-main-container">
-                        <span className="text-[#8B0000] dark:text-[#D4AF37] font-bold tracking-widest uppercase text-xs border-b-2 border-[#D4AF37] inline-block mb-4">{selectedMember.role}</span>
+                        <span className="text-[#8B0000] dark:text-[#D4AF37] font-bold tracking-[0.3em] uppercase text-[10px] mb-5 border-b-2 border-[#D4AF37] inline-block">{selectedMember.role}</span>
                         <h2 className="font-serif text-4xl md:text-6xl font-bold dark:text-[#F3E5AB] mb-6">{selectedMember.name}</h2>
-                        <p className="text-xl dark:text-[#F3E5AB]/80 leading-relaxed font-medium mb-10">{selectedMember.bio || "A vital part of the Jorwal Parivaar legacy."}</p>
+                        <p className="text-base md:text-xl text-[#5C1616] dark:text-[#F3E5AB]/80 leading-relaxed font-medium mb-10">{selectedMember.bio || "A vital part of the Jorwal Parivaar legacy."}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-10 border-t-2 border-dashed border-[#D4AF37]/30">
-                            <div className="flex items-start space-x-4"><Icon name="briefcase" size={24} className="text-[#8B0000] dark:text-[#D4AF37]"/><div className="font-bold dark:text-white">{selectedMember.profession}</div></div>
-                            <div className="flex items-start space-x-4"><Icon name="map-pin" size={24} className="text-[#8B0000] dark:text-[#D4AF37]"/><div className="font-bold dark:text-white">{selectedMember.location || "Rajasthan"}</div></div>
+                            <div className="flex items-start space-x-4"><Icon name="briefcase" size={20} className="text-[#8B0000] dark:text-[#D4AF37] mt-1"/><div className="text-sm md:text-base font-bold dark:text-white uppercase tracking-wider">{selectedMember.profession}</div></div>
+                            {selectedMember.location && <div className="flex items-start space-x-4"><Icon name="map-pin" size={20} className="text-[#8B0000] dark:text-[#D4AF37] mt-1"/><div className="text-sm md:text-base font-bold dark:text-white uppercase tracking-wider">{selectedMember.location}</div></div>}
+                            {selectedMember.birthday && <div className="flex items-start space-x-4"><Icon name="cake" size={20} className="text-[#8B0000] dark:text-[#D4AF37] mt-1"/><div className="text-sm md:text-base font-bold dark:text-white uppercase tracking-wider">{selectedMember.birthday}</div></div>}
                         </div>
                     </div>
                   </div>
