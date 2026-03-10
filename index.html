@@ -256,6 +256,7 @@
           const [user, setUser] = useState(null);
           const [messages, setMessages] = useState([]);
           const [newMessage, setNewMessage] = useState({ name: '', text: '' });
+          const [chatError, setChatError] = useState(""); // 👈 Added error tracking
           
           const [activePoll, setActivePoll] = useState({
             id: 'default_poll',
@@ -265,7 +266,7 @@
           const [hasVoted, setHasVoted] = useState(localStorage.getItem('jorwal_voted_poll') || null);
 
           // =========================================================================
-          // 🔥 FIREBASE CONFIGURATION ADDED HERE 🔥
+          // 🔥 FIREBASE CONFIGURATION 🔥
           // =========================================================================
           const myFirebaseConfig = {
             apiKey: "AIzaSyBjfa8zr8ChKnwbosAcEL2HSRAgcvUo9vU",
@@ -277,17 +278,32 @@
             measurementId: "G-FMES9870FG"
           };
 
+          // 1. THIS IS THE FIX: Wait for Firebase module to load!
+          useEffect(() => {
+            const handleLoaded = () => setFirebaseLoaded(true);
+            window.addEventListener('firebase-loaded', handleLoaded);
+            if (window.Firebase) setFirebaseLoaded(true);
+            return () => window.removeEventListener('firebase-loaded', handleLoaded);
+          }, []);
+
           // 2. Initialize Firebase for the interactive features
           useEffect(() => {
             if (!firebaseLoaded) return;
+            if (window.db) return; // Prevent double initialization
+
             const { initializeApp, getFirestore, getAuth, signInAnonymously } = window.Firebase;
             try {
                 const app = initializeApp(myFirebaseConfig);
                 window.db = getFirestore(app);
+                const auth = getAuth(app);
                 
-                // Allow users to post without passwords
-                setUser({ uid: 'anon_' + Date.now() });
-                signInAnonymously(getAuth(app)).catch((err) => console.log("Auth issue (can be ignored in test mode):", err));
+                signInAnonymously(auth)
+                  .then((cred) => setUser(cred.user))
+                  .catch((err) => console.log("Auth issue (can be ignored in test mode):", err));
+                  
+                // Fallback user just in case auth is disabled
+                if(!user) setUser({ uid: 'anon_' + Date.now() });
+
             } catch (error) { 
                 console.error("Firebase Init Error:", error); 
             }
@@ -295,7 +311,7 @@
 
           // 3. Listen to Live Messages & Polls from Database
           useEffect(() => {
-              if (!user || !window.db) return;
+              if (!window.db) return;
               const { collection, onSnapshot } = window.Firebase;
               
               const unsubChat = onSnapshot(collection(window.db, 'chitchat_messages'), (snapshot) => {
@@ -312,11 +328,18 @@
               });
 
               return () => { unsubChat(); unsubPoll(); };
-          }, [user]);
+          }, [firebaseLoaded]); // Re-run when DB is ready
 
           // 4. Send Message to Database
           const handleSendMessage = async () => {
-            if (!newMessage.name.trim() || !newMessage.text.trim() || !window.db) return;
+            if (!newMessage.name.trim() || !newMessage.text.trim()) return;
+            
+            if (!window.db) {
+                setChatError("Connecting to database... please wait a second and try again.");
+                return;
+            }
+            setChatError("");
+
             const { collection, addDoc } = window.Firebase;
             try {
                 await addDoc(collection(window.db, 'chitchat_messages'), {
@@ -327,7 +350,10 @@
                     date: `${new Date().getDate()} ${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][new Date().getMonth()]}`
                 });
                 setNewMessage({ name: '', text: '' });
-            } catch (err) { console.error("Error posting message:", err); }
+            } catch (err) { 
+                console.error("Error posting message:", err); 
+                setChatError("Could not post message. Ensure your database is created and in Test Mode.");
+            }
           };
 
           // 5. Update Reactions in Database
@@ -348,8 +374,6 @@
             newOptions[optionIndex].votes += 1;
             
             try {
-                // If it's the default placeholder, don't break, just update state. 
-                // Once you create a poll in Firebase, this will update the DB.
                 if (activePoll.id !== 'default_poll') {
                     await updateDoc(doc(window.db, 'family_polls', activePoll.id), { options: newOptions });
                 } else {
@@ -640,7 +664,12 @@
                 <div className="bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#1A0505] dark:to-black rounded-[3rem] border-[3px] border-[#D4AF37]/40 p-10">
                     <h2 className="font-serif text-3xl md:text-5xl text-center dark:text-white mb-10">Chitthi-Patri</h2>
                     <div className="flex flex-col md:flex-row gap-10">
-                        <div className="md:w-1/3 space-y-4"><input type="text" placeholder="Your Name" value={newMessage.name} onChange={e => setNewMessage({...newMessage, name: e.target.value})} className="w-full p-4 rounded-xl bg-white dark:bg-black border border-[#D4AF37]/50 dark:text-white" /><textarea placeholder="Your Message" value={newMessage.text} onChange={e => setNewMessage({...newMessage, text: e.target.value})} className="w-full p-4 rounded-xl h-32 border border-[#D4AF37]/50 dark:text-white bg-white dark:bg-black"></textarea><button onClick={handleSendMessage} className="w-full bg-[#5C1616] text-[#F3E5AB] py-4 rounded-xl font-bold uppercase shadow-lg">Post Message</button></div>
+                        <div className="md:w-1/3 space-y-4">
+                            <input type="text" placeholder="Your Name" value={newMessage.name} onChange={e => setNewMessage({...newMessage, name: e.target.value})} className="w-full p-4 rounded-xl bg-white dark:bg-black border border-[#D4AF37]/50 dark:text-white" />
+                            <textarea placeholder="Your Message" value={newMessage.text} onChange={e => setNewMessage({...newMessage, text: e.target.value})} className="w-full p-4 rounded-xl h-32 border border-[#D4AF37]/50 dark:text-white bg-white dark:bg-black"></textarea>
+                            {chatError && <p className="text-red-500 font-bold text-xs">{chatError}</p>}
+                            <button onClick={handleSendMessage} className="w-full bg-[#5C1616] text-[#F3E5AB] py-4 rounded-xl font-bold uppercase shadow-lg hover:scale-105 transition-transform">Post Message</button>
+                        </div>
                         <div className="flex-1 h-[400px] overflow-y-auto space-y-4 pr-2 custom-scrollbar">
                             {messages.length === 0 && <div className="text-center opacity-50 mt-10 italic dark:text-white">Be the first to write a message!</div>}
                             {messages.map(m => (
