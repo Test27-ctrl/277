@@ -18,7 +18,27 @@
         theme: {
           extend: {
             colors: {
-              night: { bg: '#0a0202', card: '#1A0505', border: '#D4AF37', text: '#F3E5AB', accent: '#8B0000' }
+              royal: {
+                maroon: '#5C1616',
+                crimson: '#8B0000',
+                gold: '#D4AF37',
+                lightgold: '#F3E5AB',
+                cream: '#FFF9F0',
+                dark: '#1A0505',
+                night: '#0a0202'
+              }
+            },
+            animation: {
+              'spin-slow': 'spin 20s linear infinite',
+              'spin-slower': 'spin 40s linear infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              }
             }
           }
         }
@@ -26,7 +46,7 @@
     </script>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -49,20 +69,36 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FFF9F0; overflow-x: hidden; width: 100%; transition: background-color 0.5s ease; }
         .dark body { background-color: #0a0202; }
         .font-serif { font-family: 'Bodoni Moda', serif; }
+        
+        /* Intricate Indian Block Print Background */
         .pattern-bg { 
             background-color: #FFF9F0; 
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 15-15 15L15 15zM0 30l15-15 15 15-15 15zm30 30l15-15-15-15-15 15zm30-30l-15-15-15 15 15 15z' fill='%23D4AF37' fill-opacity='0.04' fill-rule='evenodd'/%3E%3C/svg%3E"); 
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
         .dark .pattern-bg {
             background-color: #0a0202;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 15-15 15L15 15zM0 30l15-15 15 15-15 15zm30 30l15-15-15-15-15 15zm30-30l-15-15-15 15 15 15z' fill='%23D4AF37' fill-opacity='0.02' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
-        .custom-scrollbar::-webkit-scrollbar { height: 10px; width: 8px; }
+
+        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #D4AF37, #AA771C); border-radius: 10px; }
-        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .animate-spin-slow { animation: spin-slow 20s linear infinite; }
-        .modal-main-container { max-height: 90vh; overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+        .modal-main-container { max-height: 85vh; overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+        
+        /* Shimmer Effect for Buttons */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-20deg);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer { 100% { left: 200%; } }
     </style>
 </head>
 <body>
@@ -82,6 +118,17 @@
             }, [name, strokeWidth]);
             return <span ref={iconRef} className={className} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: size, height: size }} />;
         };
+
+        // --- ORNAMENTAL DIVIDER ---
+        const OrnamentalDivider = () => (
+            <div className="flex items-center justify-center w-full py-8 md:py-12 opacity-80">
+                <div className="h-[2px] w-16 md:w-32 bg-gradient-to-r from-transparent to-royal-gold rounded-full"></div>
+                <div className="mx-4 text-royal-gold animate-spin-slow">
+                    <Icon name="flower-2" size={24} />
+                </div>
+                <div className="h-[2px] w-16 md:w-32 bg-gradient-to-l from-transparent to-royal-gold rounded-full"></div>
+            </div>
+        );
 
         // --- RAW HARDCODED DATA ---
         const familyTreeData = {
@@ -250,13 +297,14 @@
           const [scrolled, setScrolled] = useState(false);
           const [searchQuery, setSearchQuery] = useState("");
           const [isDarkMode, setIsDarkMode] = useState(false);
+          const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
           // FIREBASE LIVE STATE
           const [firebaseLoaded, setFirebaseLoaded] = useState(!!window.Firebase);
           const [user, setUser] = useState(null);
           const [messages, setMessages] = useState([]);
           const [newMessage, setNewMessage] = useState({ name: '', text: '' });
-          const [chatError, setChatError] = useState(""); // 👈 Added error tracking
+          const [chatError, setChatError] = useState("");
           
           const [activePoll, setActivePoll] = useState({
             id: 'default_poll',
@@ -278,7 +326,7 @@
             measurementId: "G-FMES9870FG"
           };
 
-          // 1. THIS IS THE FIX: Wait for Firebase module to load!
+          // 1. Wait for Firebase module to load
           useEffect(() => {
             const handleLoaded = () => setFirebaseLoaded(true);
             window.addEventListener('firebase-loaded', handleLoaded);
@@ -286,10 +334,10 @@
             return () => window.removeEventListener('firebase-loaded', handleLoaded);
           }, []);
 
-          // 2. Initialize Firebase for the interactive features
+          // 2. Initialize Firebase
           useEffect(() => {
             if (!firebaseLoaded) return;
-            if (window.db) return; // Prevent double initialization
+            if (window.db) return;
 
             const { initializeApp, getFirestore, getAuth, signInAnonymously } = window.Firebase;
             try {
@@ -301,7 +349,6 @@
                   .then((cred) => setUser(cred.user))
                   .catch((err) => console.log("Auth issue (can be ignored in test mode):", err));
                   
-                // Fallback user just in case auth is disabled
                 if(!user) setUser({ uid: 'anon_' + Date.now() });
 
             } catch (error) { 
@@ -309,7 +356,7 @@
             }
           }, [firebaseLoaded]);
 
-          // 3. Listen to Live Messages & Polls from Database
+          // 3. Listen to Live Data
           useEffect(() => {
               if (!window.db) return;
               const { collection, onSnapshot } = window.Firebase;
@@ -328,7 +375,7 @@
               });
 
               return () => { unsubChat(); unsubPoll(); };
-          }, [firebaseLoaded]); // Re-run when DB is ready
+          }, [firebaseLoaded]);
 
           // 4. Send Message to Database
           const handleSendMessage = async () => {
@@ -356,7 +403,6 @@
             }
           };
 
-          // 5. Update Reactions in Database
           const handleReaction = async (msgId) => {
             if (!window.db) return;
             const { doc, updateDoc, increment } = window.Firebase;
@@ -365,19 +411,16 @@
             } catch (err) { console.error("Error updating reaction:", err); }
           };
 
-          // 6. Update Poll in Database
           const handleVote = async (optionIndex) => {
             if (!window.db || !activePoll || hasVoted === activePoll.id) return;
             const { doc, updateDoc } = window.Firebase;
-            
             const newOptions = [...activePoll.options];
             newOptions[optionIndex].votes += 1;
-            
             try {
                 if (activePoll.id !== 'default_poll') {
                     await updateDoc(doc(window.db, 'family_polls', activePoll.id), { options: newOptions });
                 } else {
-                    setActivePoll({ ...activePoll, options: newOptions }); // local fallback
+                    setActivePoll({ ...activePoll, options: newOptions }); 
                 }
                 setHasVoted(activePoll.id);
                 localStorage.setItem('jorwal_voted_poll', activePoll.id);
@@ -416,48 +459,48 @@
           }, []);
 
           useEffect(() => {
-            document.body.style.overflow = (selectedMember || selectedLocation) ? 'hidden' : 'auto';
-          }, [selectedMember, selectedLocation]);
+            document.body.style.overflow = (selectedMember || selectedLocation || isMobileMenuOpen) ? 'hidden' : 'auto';
+          }, [selectedMember, selectedLocation, isMobileMenuOpen]);
 
+          // Jharokha Style Portrait Card
           const PortraitCard = ({ member, isSmall = false }) => (
             <div 
               onClick={() => setSelectedMember(member)}
-              className={`group cursor-pointer flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-3 relative z-10 ${isSmall ? 'w-24 sm:w-28 md:w-32' : 'w-28 sm:w-36 md:w-48'}`}
+              className={`group cursor-pointer flex flex-col items-center text-center transition-all duration-500 hover:-translate-y-3 relative z-10 animate-float ${isSmall ? 'w-24 sm:w-28 md:w-32' : 'w-28 sm:w-36 md:w-48'}`}
             >
               <div className="relative w-full aspect-[3/4] mb-3 mt-4">
-                <div className={`absolute inset-0 bg-gradient-to-br from-[#D4AF37] via-[#AA771C] to-[#F3E5AB] rounded-t-full rounded-b-md blur-[3px] opacity-70 group-hover:opacity-100 group-hover:blur-[6px] transition-all duration-500`}></div>
-                <div className={`absolute inset-[2px] bg-gradient-to-b from-[#5C1616] to-[#2A0A0A] rounded-t-full rounded-b-md shadow-2xl border border-[#F3E5AB]/30 z-10`}></div>
+                {/* Glow behind */}
+                <div className={`absolute inset-0 bg-gradient-to-br from-royal-gold via-[#AA771C] to-royal-lightgold rounded-t-[3rem] rounded-b-lg blur-[3px] opacity-70 group-hover:opacity-100 group-hover:blur-[8px] transition-all duration-500`}></div>
+                {/* Outer frame */}
+                <div className={`absolute inset-[1px] bg-gradient-to-b from-royal-maroon to-royal-dark rounded-t-[3rem] rounded-b-lg shadow-2xl border-2 border-royal-lightgold/40 z-10`}></div>
                 
-                <div className={`absolute left-1/2 transform -translate-x-1/2 z-30 flex flex-col items-center ${isSmall ? '-top-4' : '-top-6'}`}>
-                  <div className={`bg-gradient-to-b from-[#F3E5AB] to-[#D4AF37] rounded-t-full ${isSmall ? 'w-1.5 h-2' : 'w-2 h-4'} shadow-sm`}></div>
-                  <div className={`bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#2A0A0A] dark:to-[#1A0505] rounded-full flex items-center justify-center shadow-[0_4px_10px_rgba(0,0,0,0.5)] border border-[#D4AF37] ${isSmall ? 'p-1' : 'p-1.5 border-[2px]'}`}>
-                    <Icon name="flower-2" className={`text-[#8B0000] dark:text-[#D4AF37] group-hover:rotate-180 transition-transform duration-700 ease-in-out ${isSmall ? 'w-3 h-3' : 'w-5 h-5'}`} size={isSmall ? 12 : 20} />
+                {/* Top Flower Decor */}
+                <div className={`absolute left-1/2 transform -translate-x-1/2 z-30 flex flex-col items-center ${isSmall ? '-top-4' : '-top-5'}`}>
+                  <div className={`bg-gradient-to-br from-royal-cream to-[#FDF5E6] dark:from-royal-dark dark:to-black rounded-full flex items-center justify-center shadow-lg border-[2px] border-royal-gold ${isSmall ? 'p-1' : 'p-1.5'}`}>
+                    <Icon name="flower-2" className={`text-royal-crimson dark:text-royal-gold group-hover:rotate-180 transition-transform duration-700 ease-in-out ${isSmall ? 'w-3 h-3' : 'w-4 h-4'}`} size={isSmall ? 12 : 16} />
                   </div>
                 </div>
 
-                <div className={`absolute bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#2A0A0A] dark:to-[#1A0505] rounded-t-full rounded-b-sm border-2 border-[#D4AF37] z-20 ${isSmall ? 'inset-1.5 p-0.5' : 'inset-2.5 p-1'} shadow-[inset_0_4px_10px_rgba(0,0,0,0.4)]`}>
-                  <div className="w-full h-full rounded-t-full rounded-b-sm overflow-hidden relative border border-[#5C1616]/20 dark:border-[#D4AF37]/20 bg-[#5C1616]/5 dark:bg-black/50">
+                {/* Inner Jharokha window */}
+                <div className={`absolute bg-royal-cream dark:bg-royal-dark rounded-t-[2.5rem] rounded-b-md border-[3px] border-double border-royal-gold z-20 ${isSmall ? 'inset-1.5 p-0.5' : 'inset-2.5 p-1'} shadow-inner`}>
+                  <div className="w-full h-full rounded-t-[2.2rem] rounded-b-sm overflow-hidden relative border border-royal-maroon/20 dark:border-royal-gold/20 bg-royal-maroon/5 dark:bg-black/50">
                     {member.image ? (
                       <img 
                         src={member.image} 
                         alt={member.name}
-                        className="object-cover w-full h-full sepia-[0.15] contrast-[1.1] group-hover:sepia-0 transform group-hover:scale-110 transition-all duration-700 ease-out"
+                        className="object-cover w-full h-full sepia-[0.1] contrast-[1.05] group-hover:sepia-0 transform group-hover:scale-110 transition-all duration-700 ease-out"
                         onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                       />
                     ) : null}
                     <div className={`${member.image ? 'hidden' : 'flex'} w-full h-full items-center justify-center p-2 text-center`}>
-                      <span className={`font-bold text-[#8B0000] dark:text-[#D4AF37] opacity-70 ${isSmall ? 'text-[0.45rem] sm:text-[0.55rem] leading-tight' : 'text-[0.65rem] sm:text-xs leading-snug'}`}>Photo bhejdo<br/>acchi wali</span>
+                      <span className={`font-bold text-royal-crimson dark:text-royal-gold opacity-70 ${isSmall ? 'text-[0.45rem] sm:text-[0.55rem] leading-tight' : 'text-[0.65rem] sm:text-xs leading-snug'}`}>Photo bhejdo<br/>acchi wali</span>
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#2A0A0A]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   </div>
                 </div>
-                
-                <div className="absolute -bottom-1 -left-1 w-3 h-3 md:w-3.5 md:h-3.5 rotate-45 bg-gradient-to-br from-[#F3E5AB] to-[#D4AF37] z-20 shadow-sm border border-[#5C1616]"></div>
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 md:w-3.5 md:h-3.5 rotate-45 bg-gradient-to-br from-[#F3E5AB] to-[#D4AF37] z-20 shadow-sm border border-[#5C1616]"></div>
               </div>
               
-              <h3 className={`font-serif font-bold text-[#5C1616] dark:text-[#F3E5AB] leading-tight mb-1 drop-shadow-sm transition-colors group-hover:text-[#8B0000] dark:group-hover:text-[#D4AF37] ${isSmall ? 'text-[0.65rem] sm:text-xs' : 'text-xs sm:text-base md:text-xl'}`}>{member.name}</h3>
-              <p className={`text-[#5C1616] dark:text-[#D4AF37]/80 font-bold uppercase tracking-widest truncate w-full px-1 sm:px-2 bg-gradient-to-r from-transparent via-[#D4AF37]/20 dark:via-[#D4AF37]/10 to-transparent py-0.5 border-y border-[#D4AF37]/30 dark:border-[#D4AF37]/20 ${isSmall ? 'text-[0.5rem] sm:text-[0.55rem]' : 'text-[0.55rem] sm:text-[0.65rem] md:text-xs'}`}>{member.role}</p>
+              <h3 className={`font-serif font-bold text-royal-maroon dark:text-royal-lightgold leading-tight mb-1 drop-shadow-sm transition-colors group-hover:text-royal-crimson dark:group-hover:text-royal-gold ${isSmall ? 'text-[0.65rem] sm:text-xs' : 'text-xs sm:text-base md:text-xl'}`}>{member.name}</h3>
+              <p className={`text-royal-maroon dark:text-royal-gold/80 font-bold uppercase tracking-widest truncate w-full px-1 sm:px-2 bg-gradient-to-r from-transparent via-royal-gold/20 dark:via-royal-gold/10 to-transparent py-0.5 border-y border-royal-gold/30 dark:border-royal-gold/20 ${isSmall ? 'text-[0.5rem] sm:text-[0.55rem]' : 'text-[0.55rem] sm:text-[0.65rem] md:text-xs'}`}>{member.role}</p>
             </div>
           );
 
@@ -465,103 +508,187 @@
             <div className={`min-h-screen relative transition-colors duration-500 ${isDarkMode ? 'dark' : ''}`}>
              <div className="pattern-bg text-[#4A1515] dark:text-[#F3E5AB] pb-10">
               
-              <nav className={`fixed w-full z-[100] transition-all duration-500 ${scrolled ? 'bg-[#2A0A0A]/95 dark:bg-[#0a0202]/95 backdrop-blur-md py-4 border-b border-[#D4AF37]/50 text-[#F3E5AB]' : 'bg-gradient-to-b from-[#1A0505]/90 to-transparent py-6 text-[#F3E5AB]'}`}>
+              {/* Desktop & Mobile Navigation */}
+              <nav className={`fixed w-full z-[100] transition-all duration-500 ${scrolled ? 'bg-royal-dark/95 dark:bg-royal-night/95 backdrop-blur-md py-3 md:py-4 border-b-2 border-royal-gold/50 text-royal-lightgold' : 'bg-gradient-to-b from-royal-dark/90 to-transparent py-5 md:py-6 text-royal-lightgold'}`}>
                 <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center">
-                  <div className="flex items-center space-x-2 md:space-x-3"><Icon name="flower-2" className="text-[#D4AF37] animate-[spin_10s_linear_infinite]" size={20} /><h1 className="font-serif text-lg md:text-2xl font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFF2CD] to-[#AA771C]">Jorwal Parivaar</h1></div>
-                  <div className="hidden lg:flex space-x-8 text-[0.65rem] md:text-xs font-bold tracking-[0.2em] uppercase items-center">
-                    <a href="#heritage" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Virasat</a>
-                    <a href="#utsav" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Utsav</a>
-                    <a href="#journey" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Itihas</a>
-                    <a href="#tree" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Vriksh</a>
-                    <a href="#map" className="hover:text-white border-b border-transparent hover:border-[#D4AF37] pb-1">Map</a>
-                    <button onClick={() => setIsDarkMode(!isDarkMode)} className="ml-4 p-2 rounded-full border border-[#D4AF37] bg-black/30"><Icon name={isDarkMode ? 'sun' : 'moon'} size={16} className="text-[#D4AF37]" /></button>
+                  <div className="flex items-center space-x-2 md:space-x-3">
+                    <Icon name="flower-2" className="text-royal-gold animate-spin-slow" size={24} />
+                    <h1 className="font-serif text-xl md:text-2xl font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-royal-gold via-white to-[#AA771C]">Jorwal Parivaar</h1>
+                  </div>
+                  
+                  {/* Desktop Links */}
+                  <div className="hidden lg:flex space-x-8 text-xs font-bold tracking-[0.2em] uppercase items-center">
+                    <a href="#heritage" className="hover:text-white border-b-2 border-transparent hover:border-royal-gold pb-1 transition-all">Virasat</a>
+                    <a href="#utsav" className="hover:text-white border-b-2 border-transparent hover:border-royal-gold pb-1 transition-all">Utsav</a>
+                    <a href="#journey" className="hover:text-white border-b-2 border-transparent hover:border-royal-gold pb-1 transition-all">Itihas</a>
+                    <a href="#tree" className="hover:text-white border-b-2 border-transparent hover:border-royal-gold pb-1 transition-all">Vriksh</a>
+                    <a href="#map" className="hover:text-white border-b-2 border-transparent hover:border-royal-gold pb-1 transition-all">Map</a>
+                    <button onClick={() => setIsDarkMode(!isDarkMode)} className="ml-4 p-2.5 rounded-full border-2 border-royal-gold bg-black/40 hover:bg-royal-gold/20 transition-all"><Icon name={isDarkMode ? 'sun' : 'moon'} size={18} className="text-royal-gold" /></button>
+                  </div>
+
+                  {/* Mobile Menu Toggle */}
+                  <div className="lg:hidden flex items-center space-x-4">
+                    <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2 rounded-full border border-royal-gold bg-black/40"><Icon name={isDarkMode ? 'sun' : 'moon'} size={16} className="text-royal-gold" /></button>
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-royal-gold"><Icon name="menu" size={28} /></button>
                   </div>
                 </div>
               </nav>
 
-              <header id="heritage" className="relative h-[85vh] flex items-center justify-center overflow-hidden border-b-[6px] border-double border-[#D4AF37]">
-                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&q=80')" }}><div className="absolute inset-0 bg-gradient-to-b from-[#1A0505]/80 via-[#5C1616]/60 to-[#FFF9F0] dark:to-[#0a0202]" /></div>
-                <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20 border-[3px] border-[#D4AF37]/30 p-8 md:p-16 rounded-3xl backdrop-blur-sm bg-[#2A0A0A]/40 shadow-2xl">
-                  <h1 className="font-serif text-5xl md:text-8xl font-bold leading-tight mb-8 text-[#F3E5AB]">The Jorwal Parivaar</h1>
-                  <a href="#tree" className="bg-[#5C1616] text-[#F3E5AB] px-10 py-4 rounded-full font-bold tracking-widest border border-[#D4AF37] hover:scale-105 transition-all">View Directory</a>
+              {/* Mobile Royal Menu Drawer */}
+              {isMobileMenuOpen && (
+                  <div className="fixed inset-0 z-[200] flex justify-end animate-in fade-in duration-300">
+                      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
+                      <div className="relative w-[80%] max-w-sm bg-gradient-to-b from-royal-dark to-royal-maroon h-full border-l-4 border-double border-royal-gold p-8 flex flex-col slide-in-from-right duration-300 shadow-2xl">
+                          <button onClick={() => setIsMobileMenuOpen(false)} className="self-end text-royal-gold p-2 bg-black/50 rounded-full border border-royal-gold mb-8"><Icon name="x" size={24} /></button>
+                          <div className="flex flex-col space-y-6 text-center text-royal-lightgold font-serif text-2xl uppercase tracking-widest">
+                              <a href="#heritage" onClick={() => setIsMobileMenuOpen(false)} className="border-b border-royal-gold/30 pb-4">॥ विरासत ॥</a>
+                              <a href="#utsav" onClick={() => setIsMobileMenuOpen(false)} className="border-b border-royal-gold/30 pb-4">॥ उत्सव ॥</a>
+                              <a href="#journey" onClick={() => setIsMobileMenuOpen(false)} className="border-b border-royal-gold/30 pb-4">॥ इतिहास ॥</a>
+                              <a href="#tree" onClick={() => setIsMobileMenuOpen(false)} className="border-b border-royal-gold/30 pb-4">॥ वंश वृक्ष ॥</a>
+                              <a href="#chitchat" onClick={() => setIsMobileMenuOpen(false)} className="border-b border-royal-gold/30 pb-4">॥ चिट्ठी पत्री ॥</a>
+                          </div>
+                          <Icon name="flower-2" className="text-royal-gold/30 w-full mt-auto animate-spin-slower" size={120} />
+                      </div>
+                  </div>
+              )}
+
+              {/* Hero Section */}
+              <header id="heritage" className="relative h-[90vh] flex items-center justify-center overflow-hidden border-b-[8px] border-double border-royal-gold">
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&q=80')" }}>
+                    <div className="absolute inset-0 bg-gradient-to-b from-royal-dark/90 via-royal-maroon/70 to-royal-cream dark:to-royal-night" />
+                </div>
+                
+                {/* Decorative Hero Arch */}
+                <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-[90%] max-w-5xl h-full border-t-[3px] border-x-[3px] border-royal-gold/30 rounded-t-[50%] pointer-events-none"></div>
+
+                <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-16 border-[4px] border-double border-royal-gold/60 p-10 md:p-20 rounded-[2rem] backdrop-blur-sm bg-royal-dark/50 shadow-[0_0_60px_rgba(212,175,55,0.2)]">
+                  <h1 className="font-serif text-5xl md:text-8xl font-bold leading-tight mb-8 text-royal-lightgold drop-shadow-2xl">The Jorwal Parivaar</h1>
+                  <p className="uppercase tracking-[0.5em] text-royal-gold font-bold text-sm mb-10 border-y border-royal-gold/40 inline-block py-2">॥ वसुधैव कुटुम्बकम् ॥</p>
+                  <br/>
+                  <a href="#tree" className="shimmer inline-block bg-gradient-to-r from-royal-maroon via-royal-crimson to-royal-maroon text-royal-lightgold px-12 py-5 rounded-full font-bold tracking-[0.2em] uppercase border-2 border-royal-gold hover:scale-105 transition-transform shadow-2xl">Vansh Vriksh</a>
                 </div>
               </header>
 
-              <section id="utsav" className="max-w-6xl mx-auto py-16 px-6 -mt-10 relative z-20">
-                <div className="bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#1A0505] dark:to-[#2A0A0A] rounded-[2rem] border-[3px] border-[#D4AF37] shadow-xl p-8 flex flex-col md:flex-row gap-8">
-                    <div className="md:w-1/3"><span className="text-[#8B0000] dark:text-[#D4AF37] font-bold uppercase tracking-widest text-xs">Utsav</span><h2 className="font-serif text-3xl font-bold dark:text-white">Upcoming Events</h2></div>
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {upcomingUtsavs.map(u => (
-                            <div key={u.id} className="bg-white/40 dark:bg-black/40 p-4 rounded-xl border border-[#D4AF37]/40 flex items-center gap-4">
-                                <Icon name={u.type === 'birthday' ? 'cake' : 'heart'} size={20} className="text-[#8B0000] dark:text-[#D4AF37]" />
-                                <div><p className="text-xs font-bold text-[#8B0000] dark:text-[#D4AF37]">{u.date}</p><p className="text-sm font-serif font-bold dark:text-white">{u.event}</p></div>
-                            </div>
-                        ))}
+              <OrnamentalDivider />
+
+              {/* Utsav Widget - Bahi Khata Style */}
+              <section id="utsav" className="max-w-6xl mx-auto px-6 relative z-20">
+                <div className="bg-royal-cream dark:bg-royal-dark rounded-none border-[6px] border-double border-royal-maroon dark:border-royal-gold shadow-2xl p-8 relative overflow-hidden">
+                    <div className="absolute top-0 bottom-0 left-4 w-1 bg-royal-maroon/20 dark:bg-royal-gold/20"></div>
+                    <div className="absolute top-0 bottom-0 left-6 w-1 bg-royal-maroon/20 dark:bg-royal-gold/20"></div>
+                    
+                    <div className="flex flex-col md:flex-row gap-10 pl-8">
+                        <div className="md:w-1/3 border-b-2 md:border-b-0 md:border-r-2 border-royal-maroon/30 dark:border-royal-gold/30 pb-6 md:pb-0 md:pr-6 text-center md:text-left">
+                            <span className="text-royal-crimson dark:text-royal-gold font-bold uppercase tracking-[0.4em] text-xs">Upcoming</span>
+                            <h2 className="font-serif text-4xl font-bold text-royal-dark dark:text-white mt-2 mb-4">॥ उत्सव ॥</h2>
+                            <Icon name="calendar-heart" size={40} className="text-royal-maroon dark:text-royal-gold mx-auto md:mx-0 opacity-50"/>
+                        </div>
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            {upcomingUtsavs.map(u => (
+                                <div key={u.id} className="flex items-center gap-4 bg-white/50 dark:bg-black/30 p-4 rounded-xl border border-royal-gold/30 hover:bg-royal-gold/10 transition-colors">
+                                    <div className="bg-royal-maroon dark:bg-royal-dark border border-royal-gold p-3 rounded-full text-royal-gold shadow-md">
+                                        <Icon name={u.type === 'birthday' ? 'cake' : 'heart'} size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-bold text-royal-crimson dark:text-royal-gold tracking-widest uppercase">{u.date}</p>
+                                        <p className="text-base font-serif font-bold text-royal-dark dark:text-white leading-tight">{u.event}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
               </section>
 
-              <section id="journey" className="max-w-5xl mx-auto py-20 px-6 relative z-20">
-                <h2 className="font-serif text-4xl font-bold text-center mb-12 dark:text-white">Our Journey (Itihas)</h2>
-                <div className="relative border-l-4 border-[#D4AF37] ml-4 md:ml-0 md:border-l-0 md:flex md:flex-col items-center">
+              <OrnamentalDivider />
+
+              {/* Timeline Section */}
+              <section id="journey" className="max-w-5xl mx-auto px-6 relative z-20">
+                <h2 className="font-serif text-5xl font-bold text-center mb-16 text-royal-dark dark:text-white">॥ इतिहास ॥</h2>
+                <div className="relative border-l-4 border-royal-gold ml-4 md:ml-0 md:border-l-0 md:flex md:flex-col items-center">
                     {journeyData.map((j, i) => (
-                        <div key={i} className={`mb-12 relative w-full md:w-1/2 ${i % 2 === 0 ? 'md:ml-auto md:pl-10' : 'md:mr-auto md:pr-10 md:text-right'}`}>
-                            <div className="absolute top-0 -left-6 md:left-1/2 md:-translate-x-1/2 w-4 h-4 bg-[#5C1616] border-2 border-[#D4AF37] rounded-full z-10"></div>
-                            <div className="bg-white/80 dark:bg-[#1A0505]/80 p-6 rounded-2xl border border-[#D4AF37]/30 shadow-md">
-                                <span className="text-[#D4AF37] font-black text-2xl opacity-40">{j.year}</span><h3 className="font-serif font-bold text-lg dark:text-white">{j.title}</h3><p className="text-sm dark:text-[#F3E5AB]/70">{j.desc}</p>
+                        <div key={i} className={`mb-12 relative w-full md:w-1/2 ${i % 2 === 0 ? 'md:ml-auto md:pl-12' : 'md:mr-auto md:pr-12 md:text-right'}`}>
+                            <div className="absolute top-0 -left-[1.35rem] md:left-1/2 md:-translate-x-1/2 w-6 h-6 bg-gradient-to-br from-royal-lightgold to-royal-gold border-[3px] border-royal-maroon dark:border-royal-dark rounded-full z-10 shadow-lg flex items-center justify-center">
+                                <div className="w-1.5 h-1.5 bg-royal-maroon rounded-full"></div>
+                            </div>
+                            <div className="bg-royal-cream/90 dark:bg-royal-dark/90 p-8 rounded-[2rem] border-[3px] border-royal-gold/30 shadow-xl hover:scale-[1.02] transition-transform backdrop-blur-sm relative overflow-hidden">
+                                <Icon name="quote" className="absolute top-4 right-4 text-royal-gold/20 w-16 h-16 rotate-180" />
+                                <span className="text-royal-gold font-black text-3xl tracking-wider block mb-2">{j.year}</span>
+                                <h3 className="font-serif font-bold text-2xl text-royal-maroon dark:text-white mb-3">{j.title}</h3>
+                                <p className="text-base text-royal-dark/80 dark:text-royal-lightgold/80 leading-relaxed font-medium">{j.desc}</p>
                             </div>
                         </div>
                     ))}
                 </div>
               </section>
 
-              <main id="tree" className="max-w-6xl mx-auto py-20 px-6 relative z-20 text-center">
+              <OrnamentalDivider />
+
+              <main id="tree" className="max-w-7xl mx-auto px-2 sm:px-6 relative z-20 text-center">
+                {/* Search Bar */}
+                <div className="w-full max-w-2xl mx-auto mb-16 relative z-30 px-4">
+                  <div className="bg-white dark:bg-royal-dark rounded-full p-2 border-[3px] border-royal-gold/60 shadow-[0_10px_30px_rgba(212,175,55,0.15)] flex items-center">
+                    <div className="bg-gradient-to-br from-royal-maroon to-royal-crimson p-3.5 rounded-full text-royal-gold ml-1"><Icon name="search" size={20} /></div>
+                    <input 
+                      type="text" placeholder="Khojo (Search member)..." 
+                      value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-transparent border-none outline-none px-6 font-serif text-royal-dark dark:text-royal-lightgold text-xl dark:placeholder-royal-gold/50"
+                    />
+                    {searchQuery && <button onClick={() => setSearchQuery("")} className="mr-5 text-royal-crimson dark:text-royal-gold hover:rotate-90 transition-transform"><Icon name="x" size={24} /></button>}
+                  </div>
+                </div>
+
                 {searchQuery ? (
-                    <div className="bg-[#FFF9F0]/80 dark:bg-[#0a0202]/80 backdrop-blur-md rounded-[3rem] p-8 border-[3px] border-[#D4AF37]/40 shadow-xl min-h-[400px]">
-                        <h2 className="font-serif text-3xl font-bold text-center mb-8 dark:text-[#D4AF37]">Search Results</h2>
-                        <div className="flex flex-wrap justify-center items-start gap-8">{searchResults.map(m => <PortraitCard key={m.id} member={m} />)}</div>
+                    <div className="bg-royal-cream/90 dark:bg-royal-dark/90 backdrop-blur-xl rounded-[3rem] p-10 border-[4px] border-royal-gold/50 shadow-2xl min-h-[400px]">
+                        <h2 className="font-serif text-4xl font-bold text-center mb-10 text-royal-maroon dark:text-royal-gold border-b-2 border-royal-gold/30 inline-block pb-2">Search Results</h2>
+                        <div className="flex flex-wrap justify-center items-start gap-10">{searchResults.map(m => <PortraitCard key={m.id} member={m} />)}</div>
                     </div>
                 ) : (
                   <>
-                    <div className="text-center mb-16 relative">
-                      <Icon name="flower-2" className="absolute top-1/2 left-0 text-[#D4AF37]/10 dark:text-[#D4AF37]/5 w-48 h-48 md:w-64 md:h-64 -translate-x-1/3 -translate-y-1/2 pointer-events-none animate-[spin_40s_linear_infinite]" size={200} />
-                      <div className="flex items-center justify-center space-x-6 mb-6 md:mb-8">
-                        <span className="text-[#8B0000] dark:text-[#D4AF37] font-bold tracking-[0.4em] uppercase text-xs md:text-sm">The Roots</span>
+                    <div className="text-center mb-20 relative">
+                      <Icon name="flower-2" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-royal-gold/10 w-96 h-96 pointer-events-none animate-spin-slower" />
+                      <div className="flex items-center justify-center space-x-6 mb-6">
+                        <div className="h-px w-16 bg-royal-gold"></div>
+                        <span className="text-royal-crimson dark:text-royal-gold font-bold tracking-[0.5em] uppercase text-sm">The Roots</span>
+                        <div className="h-px w-16 bg-royal-gold"></div>
                       </div>
-                      <h2 className="font-serif text-4xl md:text-7xl font-bold text-[#2A0A0A] dark:text-[#F3E5AB] mb-12 md:mb-16 drop-shadow-sm">Our Founders</h2>
-                      <div className="flex flex-wrap justify-center items-start gap-6 sm:gap-10 md:gap-24 relative z-10">
+                      <h2 className="font-serif text-6xl md:text-8xl font-bold text-royal-dark dark:text-white mb-20 drop-shadow-lg">॥ वंश वृक्ष ॥</h2>
+                      <div className="flex flex-wrap justify-center items-start gap-12 sm:gap-24 relative z-10">
                         {familyTreeData?.parents?.map(parent => <PortraitCard key={parent.id} member={parent} />)}
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-center my-16 md:my-20">
-                      <div className="w-1.5 h-16 md:h-24 bg-gradient-to-b from-[#D4AF37] to-[#5C1616] dark:to-[#1A0505] rounded-full"></div>
-                      <div className="p-2 md:p-3 border-[3px] border-[#D4AF37] rounded-full my-4 bg-[#FFF9F0] dark:bg-[#0a0202]">
-                        <Icon name="flower-2" className="text-[#8B0000] dark:text-[#D4AF37] animate-[spin_12s_linear_infinite]" size={28} />
+                    {/* Connecting Trunk */}
+                    <div className="flex flex-col items-center my-16">
+                      <div className="w-2 h-24 bg-gradient-to-b from-royal-gold to-royal-maroon rounded-full shadow-lg"></div>
+                      <div className="p-4 border-[4px] border-double border-royal-gold rounded-full my-4 bg-royal-cream dark:bg-royal-dark shadow-xl">
+                        <Icon name="flower-2" className="text-royal-crimson dark:text-royal-gold animate-[spin_12s_linear_infinite]" size={36} />
                       </div>
-                      <div className="w-1.5 h-16 md:h-24 bg-gradient-to-b from-[#5C1616] dark:from-[#1A0505] to-transparent rounded-full"></div>
+                      <div className="w-2 h-24 bg-gradient-to-b from-royal-maroon dark:from-royal-dark to-transparent rounded-full"></div>
                     </div>
 
-                    <div className="space-y-24 md:space-y-32">
+                    <div className="space-y-32">
                       {familyTreeData?.children?.map((branch, index) => (
-                        <div key={branch.id} className="relative bg-[#FFF9F0]/90 dark:bg-[#1A0505]/80 backdrop-blur-md rounded-[2rem] md:rounded-[3rem] p-4 sm:p-6 md:p-14 border-[3px] border-[#D4AF37]/40 shadow-2xl transition-colors duration-500">
-                          <div className="absolute top-0 left-0 w-12 h-12 md:w-20 md:h-20 border-t-[5px] border-l-[5px] border-[#D4AF37] rounded-tl-[2rem] md:rounded-tl-[3rem] opacity-70"></div>
-                          <div className="absolute top-0 right-0 w-12 h-12 md:w-20 md:h-20 border-t-[5px] border-r-[5px] border-[#D4AF37] rounded-tr-[2rem] md:rounded-tr-[3rem] opacity-70"></div>
-                          <div className="absolute bottom-0 left-0 w-12 h-12 md:w-20 md:h-20 border-b-[5px] border-l-[5px] border-[#D4AF37] rounded-bl-[2rem] md:rounded-bl-[3rem] opacity-70"></div>
-                          <div className="absolute bottom-0 right-0 w-12 h-12 md:w-20 md:h-20 border-b-[5px] border-r-[5px] border-[#D4AF37] rounded-br-[2rem] md:rounded-br-[3rem] opacity-70"></div>
+                        <div key={branch.id} className="relative bg-royal-cream/95 dark:bg-royal-dark/90 backdrop-blur-xl rounded-[3rem] md:rounded-[4rem] p-6 sm:p-10 md:p-16 border-[4px] border-royal-gold/50 shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(212,175,55,0.05)]">
+                          
+                          {/* Rich Corner Decorations */}
+                          <div className="absolute top-2 left-2 w-24 h-24 border-t-[6px] border-l-[6px] border-double border-royal-gold rounded-tl-[3.5rem] opacity-80 pointer-events-none"></div>
+                          <div className="absolute top-2 right-2 w-24 h-24 border-t-[6px] border-r-[6px] border-double border-royal-gold rounded-tr-[3.5rem] opacity-80 pointer-events-none"></div>
+                          <div className="absolute bottom-2 left-2 w-24 h-24 border-b-[6px] border-l-[6px] border-double border-royal-gold rounded-bl-[3.5rem] opacity-80 pointer-events-none"></div>
+                          <div className="absolute bottom-2 right-2 w-24 h-24 border-b-[6px] border-r-[6px] border-double border-royal-gold rounded-br-[3.5rem] opacity-80 pointer-events-none"></div>
 
-                          <div className="text-center mb-8 md:mb-10 relative">
-                            <div className="absolute -top-8 md:-top-16 left-1/2 transform -translate-x-1/2 bg-[#2A0A0A] dark:bg-black text-[#F3E5AB] px-8 md:px-10 py-2 md:py-3 rounded-full text-xs md:text-sm font-bold uppercase tracking-[0.3em] border-[3px] border-[#D4AF37] shadow-xl z-20 whitespace-nowrap">
+                          <div className="text-center mb-16 relative">
+                            <div className="absolute -top-12 md:-top-20 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-royal-dark via-black to-royal-dark text-royal-lightgold px-12 py-4 rounded-full text-base font-bold uppercase tracking-[0.4em] border-[4px] border-double border-royal-gold shadow-2xl z-20 whitespace-nowrap">
                               Branch {index + 1}
                             </div>
                             
-                            <div className="flex justify-center items-start gap-4 sm:gap-6 md:gap-20 pt-8 md:pt-10 relative z-10">
+                            <div className="flex justify-center items-start gap-8 sm:gap-16 md:gap-24 pt-12 relative z-10">
                               {branch.parents.map((parent, idx) => (
                                 <Fragment key={parent.id}>
                                   <PortraitCard member={parent} />
                                   {idx === 0 && branch.parents.length > 1 && (
-                                     <div className="flex items-center justify-center pt-16 md:pt-20 px-1 md:px-0">
-                                        <Icon name="heart" className="text-[#D4AF37] animate-pulse" size={32} />
+                                     <div className="flex items-center justify-center pt-20 px-2 hidden md:block">
+                                        <Icon name="heart" className="text-royal-gold animate-pulse drop-shadow-md" size={40} />
                                      </div>
                                   )}
                                 </Fragment>
@@ -569,25 +696,26 @@
                             </div>
                           </div>
 
-                          <div className="w-full flex flex-col items-center mb-8 md:mb-12">
-                            <div className="w-1 h-8 md:h-12 bg-gradient-to-b from-[#D4AF37] to-transparent rounded-full"></div>
-                            <div className="p-1.5 md:p-2 border-2 border-[#D4AF37]/50 rounded-full my-1 bg-[#FFF9F0] dark:bg-black shadow-sm">
-                                <Icon name="heart" className="text-[#8B0000] dark:text-[#D4AF37]" size={16} />
+                          <div className="w-full flex flex-col items-center mb-16">
+                            <div className="w-1.5 h-16 bg-gradient-to-b from-royal-gold to-transparent rounded-full"></div>
+                            <div className="p-2 border-[3px] border-royal-gold/60 rounded-full my-2 bg-royal-cream dark:bg-black shadow-lg">
+                                <Icon name="heart" className="text-royal-crimson dark:text-royal-gold" size={20} />
                             </div>
-                            <div className="w-1 h-8 md:h-12 bg-gradient-to-b from-transparent to-[#D4AF37] rounded-full"></div>
+                            <div className="w-1.5 h-16 bg-gradient-to-b from-transparent to-royal-gold rounded-full"></div>
                           </div>
 
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12">
+                          <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 md:gap-16">
                             {branch.children.map((childNode) => (
-                              <div key={childNode.id} className="bg-white dark:bg-black/40 rounded-[2rem] md:rounded-[2.5rem] p-4 sm:p-6 md:p-8 border-[2px] border-[#D4AF37]/30 shadow-xl flex flex-col items-center hover:-translate-y-1 transition-transform relative">
+                              <div key={childNode.id} className="bg-white/80 dark:bg-black/60 rounded-[3rem] p-6 sm:p-10 border-[3px] border-royal-gold/40 shadow-xl flex flex-col items-center relative overflow-hidden hover:border-royal-gold/80 transition-colors">
+                                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-royal-gold to-transparent opacity-50"></div>
                                 
-                                <div className="flex justify-center items-start gap-2 sm:gap-4 md:gap-10 relative w-full z-10">
+                                <div className="flex justify-center items-start gap-4 sm:gap-8 md:gap-12 relative w-full z-10">
                                   {childNode.parents.map((p, idx) => (
                                      <Fragment key={p.id}>
                                        <PortraitCard member={p} isSmall />
                                        {idx === 0 && childNode.parents.length > 1 && (
-                                         <div className="flex items-center justify-center pt-10 md:pt-14 px-1 md:px-0">
-                                            <Icon name="heart" className="text-[#D4AF37]/60 animate-pulse" size={20} />
+                                         <div className="flex items-center justify-center pt-16 hidden sm:block">
+                                            <Icon name="heart" className="text-royal-gold/60 animate-pulse" size={24} />
                                          </div>
                                        )}
                                      </Fragment>
@@ -595,15 +723,15 @@
                                 </div>
                                 
                                 {childNode.children && childNode.children.length > 0 && (
-                                  <div className="w-full mt-2 md:mt-4 flex flex-col items-center">
-                                    <div className="flex flex-col items-center my-3 md:my-4">
-                                        <div className="w-0.5 h-4 md:h-6 bg-gradient-to-b from-[#D4AF37]/60 to-[#8B0000]/40 dark:to-[#D4AF37]/40"></div>
-                                        <div className="px-4 py-1 rounded-full bg-[#FFF9F0] dark:bg-[#1A0505] border border-[#D4AF37]/30 text-[0.55rem] md:text-[0.6rem] font-bold tracking-[0.2em] text-[#8B0000] dark:text-[#D4AF37] uppercase my-1 shadow-sm">
+                                  <div className="w-full mt-6 flex flex-col items-center">
+                                    <div className="flex flex-col items-center my-4">
+                                        <div className="w-1 h-8 bg-gradient-to-b from-royal-gold/60 to-royal-maroon/40 rounded-full"></div>
+                                        <div className="px-6 py-2 rounded-full bg-royal-cream dark:bg-royal-dark border-2 border-royal-gold/40 text-[0.65rem] font-bold tracking-[0.3em] text-royal-crimson dark:text-royal-gold uppercase my-2 shadow-md">
                                           Their Children
                                         </div>
-                                        <div className="w-0.5 h-4 md:h-6 bg-gradient-to-b from-[#8B0000]/40 dark:from-[#D4AF37]/40 to-[#D4AF37]/60"></div>
+                                        <div className="w-1 h-8 bg-gradient-to-b from-royal-maroon/40 dark:from-royal-gold/40 to-royal-gold/60 rounded-full"></div>
                                     </div>
-                                    <div className="flex justify-center items-start gap-3 sm:gap-4 md:gap-6 flex-wrap bg-[#FFF9F0]/60 dark:bg-black/30 w-full p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border border-[#D4AF37]/10 shadow-inner">
+                                    <div className="flex justify-center items-start gap-4 md:gap-8 flex-wrap bg-gradient-to-b from-royal-cream/60 to-transparent dark:from-black/40 w-full p-6 md:p-8 rounded-[2rem] border-t-2 border-royal-gold/20">
                                       {childNode.children.map(grandchildNode => (
                                         grandchildNode.parents.map(gk => <PortraitCard key={gk.id} member={gk} isSmall />)
                                       ))}
@@ -620,15 +748,20 @@
                 )}
               </main>
 
+              <OrnamentalDivider />
+
               <section id="map" className="max-w-6xl mx-auto py-16 px-6 relative z-20">
-                <div className="bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#1A0505] dark:to-black rounded-[3rem] border-[3px] border-[#D4AF37]/40 shadow-2xl p-10 text-center">
-                  <h2 className="font-serif text-4xl font-bold dark:text-[#F3E5AB] mb-10">Where Are We?</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="bg-gradient-to-br from-royal-cream to-[#FDF5E6] dark:from-royal-dark dark:to-black rounded-[3rem] border-[4px] border-double border-royal-gold shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-10 md:p-16 text-center relative overflow-hidden">
+                  <Icon name="map-pin" className="text-royal-maroon dark:text-royal-gold/10 absolute -top-10 -left-10 w-64 h-64 pointer-events-none" />
+                  <h2 className="font-serif text-4xl md:text-5xl font-bold dark:text-royal-lightgold mb-12 relative z-10 drop-shadow-md">Where Are We?</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
                     {Object.keys(uniqueLocations).map((loc) => (
-                      <div key={loc} onClick={() => setSelectedLocation(loc)} className="bg-white/70 dark:bg-[#2A0A0A] p-6 rounded-3xl border-2 border-[#D4AF37]/30 cursor-pointer hover:scale-105 transition-all">
-                        <Icon name="map-pin" className="text-[#8B0000] dark:text-[#D4AF37] mx-auto mb-2" size={24} />
-                        <h3 className="font-serif font-bold dark:text-white">{loc}</h3>
-                        <p className="text-xs text-[#8B0000] dark:text-[#D4AF37] font-bold uppercase">{uniqueLocations[loc].length} Members</p>
+                      <div key={loc} onClick={() => setSelectedLocation(loc)} className="bg-white/80 dark:bg-royal-maroon/20 p-8 rounded-[2rem] border-[3px] border-royal-gold/40 cursor-pointer hover:-translate-y-2 hover:shadow-2xl transition-all backdrop-blur-sm group">
+                        <div className="bg-royal-maroon dark:bg-black w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-royal-gold group-hover:scale-110 transition-transform">
+                            <Icon name="map-pin" className="text-royal-lightgold dark:text-royal-gold" size={28} />
+                        </div>
+                        <h3 className="font-serif font-bold text-xl dark:text-white mb-2 group-hover:text-royal-crimson dark:group-hover:text-royal-gold transition-colors">{loc}</h3>
+                        <p className="text-[10px] text-royal-maroon dark:text-royal-gold font-bold uppercase tracking-widest bg-royal-cream dark:bg-black py-1 px-3 rounded-full inline-block border border-royal-gold/30">{uniqueLocations[loc].length} Members</p>
                       </div>
                     ))}
                   </div>
@@ -636,22 +769,30 @@
               </section>
 
               <section id="polls" className="max-w-4xl mx-auto py-16 px-6 relative z-20">
-                <div className="bg-[#FFF9F0] dark:bg-[#1A0505] p-10 rounded-[3rem] border-[3px] border-[#D4AF37] shadow-xl text-center">
-                    <Icon name="vote" className="text-[#8B0000] dark:text-[#D4AF37] mx-auto mb-4" size={32} />
-                    <h2 className="font-serif text-3xl font-bold dark:text-white mb-8">Parivaar Live Poll</h2>
+                <div className="bg-royal-cream dark:bg-royal-dark p-10 md:p-16 rounded-[3rem] border-[6px] border-double border-royal-maroon dark:border-royal-gold shadow-2xl text-center relative">
+                    <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-royal-maroon dark:border-royal-gold"></div>
+                    <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-royal-maroon dark:border-royal-gold"></div>
+                    <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-royal-maroon dark:border-royal-gold"></div>
+                    <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-royal-maroon dark:border-royal-gold"></div>
+
+                    <Icon name="vote" className="text-royal-crimson dark:text-royal-gold mx-auto mb-6" size={40} />
+                    <h2 className="font-serif text-3xl md:text-4xl font-bold text-royal-dark dark:text-white mb-4">पारिवारिक राय</h2>
+                    <p className="text-xs uppercase tracking-[0.3em] font-bold text-royal-maroon/60 dark:text-royal-gold/60 mb-10 border-b border-royal-gold/30 inline-block pb-2">Live Family Poll</p>
+                    
                     {activePoll && (
-                        <div className="space-y-4 max-w-sm mx-auto">
-                            <p className="font-bold dark:text-white mb-4">{activePoll.question}</p>
+                        <div className="space-y-5 max-w-md mx-auto text-left">
+                            <p className="font-serif font-bold text-xl text-center dark:text-white mb-6 leading-relaxed">{activePoll.question}</p>
                             {activePoll.options.map((opt, idx) => {
                                 const total = activePoll.options.reduce((a, c) => a + c.votes, 0);
                                 const percent = total > 0 ? Math.round((opt.votes/total)*100) : 0;
                                 const isVoted = hasVoted === activePoll.id;
                                 return (
                                     <div key={idx} className="relative">
-                                        <button disabled={isVoted} onClick={() => handleVote(idx)} className="w-full p-4 rounded-xl border-2 border-[#D4AF37]/40 relative z-10 font-bold dark:text-white flex justify-between">
-                                            <span>{opt.text}</span>{isVoted && <span>{percent}%</span>}
+                                        <button disabled={isVoted} onClick={() => handleVote(idx)} className={`w-full p-5 rounded-2xl border-[3px] transition-all relative z-10 font-bold flex justify-between items-center ${isVoted ? 'border-royal-gold/50 bg-transparent text-royal-dark dark:text-white' : 'border-royal-gold hover:bg-royal-gold/10 text-royal-maroon dark:text-royal-lightgold bg-white dark:bg-black/50'}`}>
+                                            <span className="text-lg">{opt.text}</span>
+                                            {isVoted && <span className="text-royal-crimson dark:text-royal-gold text-xl">{percent}%</span>}
                                         </button>
-                                        {isVoted && <div className="absolute inset-y-0 left-0 bg-[#D4AF37]/20 rounded-xl transition-all duration-1000" style={{width: `${percent}%`}}></div>}
+                                        {isVoted && <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-royal-gold/30 to-royal-gold/10 rounded-2xl transition-all duration-1000" style={{width: `${percent}%`}}></div>}
                                     </div>
                                 );
                             })}
@@ -661,67 +802,138 @@
               </section>
 
               <section id="chitchat" className="max-w-6xl mx-auto py-16 px-6 relative z-20">
-                <div className="bg-gradient-to-br from-[#FFF9F0] to-[#FDF5E6] dark:from-[#1A0505] dark:to-black rounded-[3rem] border-[3px] border-[#D4AF37]/40 p-10">
-                    <h2 className="font-serif text-3xl md:text-5xl text-center dark:text-white mb-10">Chitthi-Patri</h2>
-                    <div className="flex flex-col md:flex-row gap-10">
-                        <div className="md:w-1/3 space-y-4">
-                            <input type="text" placeholder="Your Name" value={newMessage.name} onChange={e => setNewMessage({...newMessage, name: e.target.value})} className="w-full p-4 rounded-xl bg-white dark:bg-black border border-[#D4AF37]/50 dark:text-white" />
-                            <textarea placeholder="Your Message" value={newMessage.text} onChange={e => setNewMessage({...newMessage, text: e.target.value})} className="w-full p-4 rounded-xl h-32 border border-[#D4AF37]/50 dark:text-white bg-white dark:bg-black"></textarea>
-                            {chatError && <p className="text-red-500 font-bold text-xs">{chatError}</p>}
-                            <button onClick={handleSendMessage} className="w-full bg-[#5C1616] text-[#F3E5AB] py-4 rounded-xl font-bold uppercase shadow-lg hover:scale-105 transition-transform">Post Message</button>
+                <div className="bg-gradient-to-b from-royal-cream to-[#FDF5E6] dark:from-royal-dark dark:to-[#110303] rounded-[3rem] border-[4px] border-royal-gold/50 shadow-2xl p-8 md:p-14 relative">
+                    <h2 className="font-serif text-4xl md:text-6xl text-center font-bold text-royal-dark dark:text-royal-lightgold mb-4">॥ चिट्ठी पत्री ॥</h2>
+                    <p className="text-center text-xs uppercase tracking-[0.4em] font-bold text-royal-maroon/70 dark:text-royal-gold/70 mb-12">Digital Message Board</p>
+                    
+                    <div className="flex flex-col lg:flex-row gap-12">
+                        {/* Message Input Box - Styled like an envelope */}
+                        <div className="lg:w-1/3 bg-white dark:bg-black p-8 rounded-[2rem] border-[3px] border-royal-gold shadow-inner relative">
+                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-royal-maroon dark:bg-royal-dark border-2 border-royal-gold rounded-full p-2">
+                                <Icon name="mail" className="text-royal-lightgold dark:text-royal-gold" size={24} />
+                            </div>
+                            <div className="space-y-6 mt-4">
+                                <div>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-royal-maroon dark:text-royal-gold mb-2 block">Aapka Naam (Name)</label>
+                                    <input type="text" value={newMessage.name} onChange={e => setNewMessage({...newMessage, name: e.target.value})} className="w-full p-4 rounded-xl bg-royal-cream/50 dark:bg-royal-dark/50 border-2 border-royal-gold/40 outline-none focus:border-royal-gold dark:text-white font-bold" />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-royal-maroon dark:text-royal-gold mb-2 block">Sandesh (Message)</label>
+                                    <textarea value={newMessage.text} onChange={e => setNewMessage({...newMessage, text: e.target.value})} className="w-full p-4 rounded-xl h-32 resize-none bg-royal-cream/50 dark:bg-royal-dark/50 border-2 border-royal-gold/40 outline-none focus:border-royal-gold dark:text-white font-medium"></textarea>
+                                </div>
+                                {chatError && <p className="text-red-500 font-bold text-xs bg-red-100 dark:bg-red-900/30 p-3 rounded-lg">{chatError}</p>}
+                                <button onClick={handleSendMessage} className="shimmer w-full bg-gradient-to-r from-royal-maroon to-royal-crimson dark:from-royal-gold dark:to-[#AA771C] text-royal-lightgold dark:text-royal-dark py-5 rounded-xl font-bold tracking-[0.2em] uppercase shadow-lg hover:scale-105 transition-transform flex items-center justify-center gap-3">
+                                    <Icon name="send" size={20} /> Post Message
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex-1 h-[400px] overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-                            {messages.length === 0 && <div className="text-center opacity-50 mt-10 italic dark:text-white">Be the first to write a message!</div>}
-                            {messages.map(m => (
-                            <div key={m.id} className="bg-white dark:bg-black/50 p-6 rounded-2xl border-l-4 border-[#D4AF37] shadow-sm"><div className="flex justify-between mb-2"><span className="font-bold text-[#8B0000] dark:text-[#D4AF37]">{m.name}</span><span className="text-[10px] uppercase font-bold opacity-50 dark:text-white">{m.date}</span></div><p className="text-sm dark:text-white mb-4">{m.text}</p><button onClick={() => handleReaction(m.id)} className="flex items-center gap-1.5 text-[#8B0000] dark:text-[#D4AF37] text-xs font-bold"><Icon name="heart" size={14} className={m.reactions > 0 ? "fill-current" : ""}/> {m.reactions || 0}</button></div>
-                        ))}</div>
+
+                        {/* Messages List */}
+                        <div className="flex-1 h-[500px] overflow-y-auto space-y-6 pr-4 custom-scrollbar">
+                            {messages.length === 0 && <div className="text-center opacity-50 mt-20 font-serif text-2xl italic dark:text-royal-gold">Be the first to write a message!</div>}
+                            {messages.map((m, index) => (
+                                <div key={m.id} className={`bg-white/90 dark:bg-royal-dark/80 p-6 md:p-8 rounded-[2rem] border-2 border-royal-gold/40 shadow-md relative hover:shadow-xl transition-all ${index % 2 === 0 ? 'ml-0 md:mr-10' : 'mr-0 md:ml-10'}`}>
+                                    <Icon name="quote" className="absolute top-6 right-6 text-royal-gold/10 w-12 h-12 rotate-180 pointer-events-none" />
+                                    <div className="flex justify-between items-start mb-4 relative z-10">
+                                        <span className="font-serif font-bold text-2xl text-royal-crimson dark:text-royal-gold">{m.name}</span>
+                                        <span className="text-[10px] uppercase font-bold text-royal-maroon/60 dark:text-royal-lightgold/60 border border-royal-gold/30 rounded-full px-3 py-1">{m.date}</span>
+                                    </div>
+                                    <p className="text-base dark:text-white mb-6 relative z-10 leading-relaxed">{m.text}</p>
+                                    <div className="flex justify-end relative z-10">
+                                        <button onClick={() => handleReaction(m.id)} className="flex items-center gap-2 bg-royal-cream dark:bg-black px-4 py-2 rounded-full border border-royal-gold/50 text-royal-crimson dark:text-royal-gold hover:bg-royal-gold/20 transition-colors">
+                                            <Icon name="heart" size={18} className={m.reactions > 0 ? "fill-current" : ""}/> 
+                                            <span className="font-bold">{m.reactions || 0}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
               </section>
 
-              <footer className="bg-[#1A0505] text-[#F3E5AB] py-20 text-center border-t-[8px] border-double border-[#D4AF37]">
-                <Icon name="flower-2" className="text-[#D4AF37] mx-auto mb-6 animate-spin-slow" size={48} /><p className="font-serif text-4xl md:text-5xl font-bold tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFF2CD] to-[#AA771C]">Jorwal Parivaar</p>
-                <p className="text-sm tracking-[0.5em] uppercase text-[#D4AF37]/90 mt-4">॥ वसुधैव कुटुम्बकम् ॥</p>
+              <footer className="bg-gradient-to-b from-royal-dark to-black text-royal-lightgold py-24 text-center border-t-[8px] border-double border-royal-gold relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23D4AF37\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+                <div className="relative z-10 max-w-4xl mx-auto px-6">
+                    <div className="flex justify-center mb-8">
+                        <div className="w-16 h-px bg-gradient-to-r from-transparent to-royal-gold mt-6"></div>
+                        <Icon name="flower-2" className="text-royal-gold mx-6 animate-spin-slow" size={48} />
+                        <div className="w-16 h-px bg-gradient-to-l from-transparent to-royal-gold mt-6"></div>
+                    </div>
+                    <p className="font-serif text-5xl md:text-6xl font-bold tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-royal-gold via-white to-[#AA771C] drop-shadow-lg mb-4">Jorwal Parivaar</p>
+                    <p className="text-sm md:text-base tracking-[0.6em] uppercase text-royal-gold/90 font-bold mb-12">॥ वसुधैव कुटुम्बकम् ॥</p>
+                    <p className="text-xs text-royal-gold/40 border-t border-royal-gold/20 pt-8 inline-block px-12">A Legacy Built on Love and Respect.</p>
+                </div>
               </footer>
 
+              {/* Enhanced Member Modal (Popup) */}
               {selectedMember && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-                  <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedMember(null)}></div>
-                  <div className="relative w-full max-w-5xl bg-[#FFF9F0] dark:bg-[#1A0505] border-[6px] border-[#D4AF37] rounded-3xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
-                    <div className="absolute inset-1 md:inset-2 border-[3px] md:border-[4px] border-double border-[#D4AF37]/60 rounded-[1.5rem] md:rounded-2xl pointer-events-none z-20"></div>
-                    <button onClick={() => setSelectedMember(null)} className="absolute top-6 right-6 z-[210] text-[#D4AF37] p-2 bg-black rounded-full border border-[#D4AF37] hover:rotate-90 transition-all"><Icon name="x" size={24} /></button>
-                    <div className="w-full md:w-2/5 bg-[#5C1616] dark:bg-black p-8 flex items-center justify-center relative overflow-hidden">
-                       <Icon name="flower-2" className="absolute text-white/5 dark:text-[#D4AF37]/5 w-[150%] h-[150%] animate-[spin_30s_linear_infinite]" size={400} />
-                       <div className="relative w-[60%] sm:w-1/2 md:w-full aspect-[3/4] max-w-[280px] z-10">
-                          <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#F3E5AB] dark:to-[#8B0000] rounded-t-full rounded-b-md shadow-2xl"></div>
-                          <div className="absolute inset-[3px] md:inset-[4px] bg-[#2A0A0A] rounded-t-full rounded-b-md overflow-hidden">
-                            {selectedMember.image ? <img src={selectedMember.image} className="w-full h-full object-cover" /> : <div className="h-full flex items-center justify-center text-[#F3E5AB] font-bold">Photo Bhejdo</div>}
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8 animate-in fade-in duration-300">
+                  <div className="absolute inset-0 bg-black/95 backdrop-blur-md" onClick={() => setSelectedMember(null)}></div>
+                  <div className="relative w-full max-w-5xl bg-royal-cream dark:bg-royal-dark border-[8px] border-double border-royal-gold rounded-[2rem] md:rounded-[3rem] shadow-[0_0_80px_rgba(212,175,55,0.2)] overflow-hidden flex flex-col md:flex-row max-h-[90vh] scale-in-center">
+                    <button onClick={() => setSelectedMember(null)} className="absolute top-4 right-4 md:top-6 md:right-6 z-[210] text-royal-gold p-2 bg-royal-dark/80 rounded-full border-2 border-royal-gold hover:rotate-90 transition-all"><Icon name="x" size={24} /></button>
+                    
+                    <div className="w-full md:w-2/5 bg-gradient-to-br from-royal-maroon to-[#2A0A0A] p-8 md:p-12 flex items-center justify-center relative overflow-hidden">
+                       <Icon name="flower-2" className="absolute text-royal-gold/5 w-[150%] h-[150%] animate-spin-slower" size={400} />
+                       
+                       {/* Modal Jharokha Image */}
+                       <div className="relative w-[60%] sm:w-1/2 md:w-[90%] aspect-[3/4] z-10 animate-float">
+                          <div className="absolute inset-0 bg-gradient-to-br from-royal-gold to-royal-lightgold rounded-t-[4rem] rounded-b-xl shadow-2xl"></div>
+                          <div className="absolute inset-[4px] md:inset-[6px] bg-royal-dark rounded-t-[3.8rem] rounded-b-lg overflow-hidden border-[3px] border-double border-royal-maroon/50">
+                            {selectedMember.image ? <img src={selectedMember.image} className="w-full h-full object-cover sepia-[0.1]" /> : <div className="h-full flex items-center justify-center text-royal-lightgold font-bold px-4 text-center">Photo Bhejdo</div>}
                           </div>
                        </div>
                     </div>
-                    <div className="w-full md:w-3/5 p-8 md:p-14 overflow-y-auto custom-scrollbar relative bg-[#FFF9F0] dark:bg-[#1A0505] modal-main-container">
-                        <span className="text-[#8B0000] dark:text-[#D4AF37] font-bold tracking-[0.3em] uppercase text-[10px] mb-5 border-b-2 border-[#D4AF37] inline-block">{selectedMember.role}</span>
-                        <h2 className="font-serif text-4xl md:text-6xl font-bold dark:text-[#F3E5AB] mb-6">{selectedMember.name}</h2>
-                        <p className="text-base md:text-xl text-[#5C1616] dark:text-[#F3E5AB]/80 leading-relaxed font-medium mb-10">{selectedMember.bio || "A vital part of the Jorwal Parivaar legacy."}</p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-10 border-t-2 border-dashed border-[#D4AF37]/30">
-                            <div className="flex items-start space-x-4"><Icon name="briefcase" size={20} className="text-[#8B0000] dark:text-[#D4AF37] mt-1"/><div className="text-sm md:text-base font-bold dark:text-white uppercase tracking-wider">{selectedMember.profession}</div></div>
-                            {selectedMember.location && <div className="flex items-start space-x-4"><Icon name="map-pin" size={20} className="text-[#8B0000] dark:text-[#D4AF37] mt-1"/><div className="text-sm md:text-base font-bold dark:text-white uppercase tracking-wider">{selectedMember.location}</div></div>}
-                            {selectedMember.birthday && <div className="flex items-start space-x-4"><Icon name="cake" size={20} className="text-[#8B0000] dark:text-[#D4AF37] mt-1"/><div className="text-sm md:text-base font-bold dark:text-white uppercase tracking-wider">{selectedMember.birthday}</div></div>}
+
+                    <div className="w-full md:w-3/5 p-8 md:p-16 overflow-y-auto custom-scrollbar relative bg-royal-cream dark:bg-royal-dark modal-main-container">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-royal-gold/5 rounded-bl-[100%] pointer-events-none"></div>
+                        
+                        <span className="text-royal-crimson dark:text-royal-gold font-bold tracking-[0.4em] uppercase text-xs border-b-2 border-royal-gold/50 inline-block mb-6 pb-1">{selectedMember.role}</span>
+                        <h2 className="font-serif text-4xl md:text-6xl font-bold text-royal-dark dark:text-white mb-6 drop-shadow-sm">{selectedMember.name}</h2>
+                        
+                        <div className="relative pl-6 border-l-4 border-royal-gold/40 mb-10">
+                            <Icon name="quote" className="absolute -top-2 -left-2 text-royal-gold/30 bg-royal-cream dark:bg-royal-dark" size={20} />
+                            <p className="text-base md:text-xl text-royal-maroon/90 dark:text-royal-lightgold/80 leading-relaxed font-medium italic">{selectedMember.bio || "A vital thread in the fabric of the Jorwal Parivaar legacy."}</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-10 border-t-2 border-dashed border-royal-gold/30">
+                            <div className="flex items-start space-x-4">
+                                <div className="bg-royal-maroon/10 dark:bg-royal-gold/10 p-3 rounded-xl border border-royal-gold/30">
+                                    <Icon name="briefcase" size={24} className="text-royal-crimson dark:text-royal-gold"/>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] uppercase tracking-widest text-royal-maroon/60 dark:text-royal-gold/60 font-bold mb-1">Profession</p>
+                                    <div className="font-bold text-royal-dark dark:text-white text-base">{selectedMember.profession}</div>
+                                </div>
+                            </div>
+                            {selectedMember.location && (
+                            <div className="flex items-start space-x-4">
+                                <div className="bg-royal-maroon/10 dark:bg-royal-gold/10 p-3 rounded-xl border border-royal-gold/30">
+                                    <Icon name="map-pin" size={24} className="text-royal-crimson dark:text-royal-gold"/>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] uppercase tracking-widest text-royal-maroon/60 dark:text-royal-gold/60 font-bold mb-1">Location</p>
+                                    <div className="font-bold text-royal-dark dark:text-white text-base">{selectedMember.location}</div>
+                                </div>
+                            </div>
+                            )}
+                            {selectedMember.birthday && (
+                            <div className="flex items-start space-x-4">
+                                <div className="bg-royal-maroon/10 dark:bg-royal-gold/10 p-3 rounded-xl border border-royal-gold/30">
+                                    <Icon name="cake" size={24} className="text-royal-crimson dark:text-royal-gold"/>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] uppercase tracking-widest text-royal-maroon/60 dark:text-royal-gold/60 font-bold mb-1">Birthday</p>
+                                    <div className="font-bold text-royal-dark dark:text-white text-base">{selectedMember.birthday}</div>
+                                </div>
+                            </div>
+                            )}
                         </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {selectedLocation && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4"><div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedLocation(null)}></div>
-                  <div className="relative w-full max-w-4xl bg-[#FFF9F0] dark:bg-[#0a0202] border-[4px] border-[#D4AF37] rounded-[2rem] overflow-hidden flex flex-col max-h-[85vh]">
-                    <button onClick={() => setSelectedLocation(null)} className="absolute top-6 right-6 z-[210] text-[#D4AF37] p-2 bg-black rounded-full border border-[#D4AF37]"><Icon name="x" size={20} /></button>
-                    <div className="p-8 border-b-2 border-[#D4AF37]/30 text-center dark:bg-[#1A0505]"><h2 className="font-serif text-3xl font-bold dark:text-[#F3E5AB]">{selectedLocation}</h2></div>
-                    <div className="p-10 overflow-y-auto custom-scrollbar flex flex-wrap justify-center gap-8 bg-white/50 dark:bg-black/50">{uniqueLocations[selectedLocation].map(m => <PortraitCard key={m.id} member={m} isSmall />)}</div>
-                  </div>
-                </div>
-              )}
              </div>
             </div>
           );
