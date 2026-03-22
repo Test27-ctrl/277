@@ -33,11 +33,18 @@
               'spin-slower': 'spin 40s linear infinite',
               'float': 'float 6s ease-in-out infinite',
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float-up': 'float-up var(--duration, 15s) linear infinite',
             },
             keyframes: {
               float: {
                 '0%, 100%': { transform: 'translateY(0)' },
                 '50%': { transform: 'translateY(-10px)' },
+              },
+              'float-up': {
+                '0%': { transform: 'translateY(120vh) rotate(0deg)', opacity: '0' },
+                '10%': { opacity: '1' },
+                '90%': { opacity: '1' },
+                '100%': { transform: 'translateY(-20vh) rotate(20deg)', opacity: '0' },
               }
             }
           }
@@ -107,6 +114,37 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo, Fragment, useRef } = React;
 
+        // --- BACKGROUND BALLOONS COMPONENT ---
+        const Balloons = () => {
+            // Generate 15 random balloons/emojis for the background
+            const balloons = useMemo(() => {
+                return Array.from({ length: 15 }).map((_, i) => ({
+                    id: i,
+                    left: `${Math.random() * 90}%`,
+                    animationDelay: `${Math.random() * 15}s`,
+                    animationDuration: `${12 + Math.random() * 10}s`,
+                    fontSize: `${1.5 + Math.random() * 2}rem`,
+                    icon: ['🎈', '🎊', '✨', '🍼', '💙'][Math.floor(Math.random() * 5)]
+                }));
+            }, []);
+
+            return (
+                <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-60">
+                    {balloons.map(b => (
+                        <div key={b.id} className="absolute bottom-0 animate-float-up"
+                             style={{ 
+                                left: b.left, 
+                                animationDelay: b.animationDelay, 
+                                '--duration': b.animationDuration,
+                                fontSize: b.fontSize 
+                             }}>
+                            {b.icon}
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
         // --- ICON WRAPPER ---
         const Icon = ({ name, size = 24, className = "", strokeWidth = 2 }) => {
             const iconRef = useRef(null);
@@ -121,7 +159,7 @@
 
         // --- ORNAMENTAL DIVIDER ---
         const OrnamentalDivider = () => (
-            <div className="flex items-center justify-center w-full py-8 md:py-12 opacity-80">
+            <div className="flex items-center justify-center w-full py-8 md:py-12 opacity-80 relative z-10">
                 <div className="h-[2px] w-12 md:w-32 bg-gradient-to-r from-transparent to-royal-gold rounded-full"></div>
                 <div className="mx-3 md:mx-4 text-royal-gold md:animate-spin-slow">
                     <Icon name="flower-2" size={24} />
@@ -199,7 +237,11 @@
                     { id: 'g3-5', generation: 3, name: "Pooja Meena", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczNYpBdKDCqotwafpGkuFTNXLoNS-4EHUm6zjhkBp_A8NQwr77TThICfMHMqsHVAT8ArgOzsr801YlYX8zID0b1boZHFJ6yBPTlSjR72vDFoY80udgSIJDgjd22QO1mqMkKV-HaBLQlH0R3SCk-k_5FyjQ=w647-h863-s-no-gm?authuser=0", birthday: "10 May 1998", profession: "Housewife", location: "Delhi/NCR" },
                     { id: 'g3-5s', generation: 3, name: "Pawan Meena", role: "Son-in-law", image: "https://lh3.googleusercontent.com/pw/AP1GczNxapGZMtp0c8LOnsT2ObcBoWwK79TXK7z_yN8FsX2J_CX7AvpBLm5k2162_ahIMyuuMoVyUMNjjKjkGj5O1LuMIcGf0Jzty2P-tz4naJHTSgWkFpPPy8JwBGM4DStRwLqtwJkmnHopUa2vRYukjhsS3Q=w647-h863-s-no-gm?authuser=0", profession: "CA in indian railways", location: "Delhi/NCR" }
                   ],
-                  children: [{ id: 'g4-4', parents: [{ id: 'g4-4p', name: "Saanvi Ghunawat", role: "Great-Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczN0PgG8aJvfR-LI9mlo_nBILbwOtKc4jm-0ZS5Z9Gxk59zu7oOgxufmH9obAMbRMA6HKduD0LDmnuuvZqt8CRXORmeivKikKpazs70hunZfrUnsajTJaoBvxO_wUJwoMHloHEY-P4Fz4mLY0QTuE_DH3g=w585-h780-s-no-gm?authuser=0", birthday: "20 March 2023", profession: "Mummy papa ko pareshan karna", location: "Delhi/NCR" }], children: [] }]
+                  // Added the new Baby Boy to the children array here!
+                  children: [
+                      { id: 'g4-4', parents: [{ id: 'g4-4p', name: "Saanvi Ghunawat", role: "Great-Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczN0PgG8aJvfR-LI9mlo_nBILbwOtKc4jm-0ZS5Z9Gxk59zu7oOgxufmH9obAMbRMA6HKduD0LDmnuuvZqt8CRXORmeivKikKpazs70hunZfrUnsajTJaoBvxO_wUJwoMHloHEY-P4Fz4mLY0QTuE_DH3g=w585-h780-s-no-gm?authuser=0", birthday: "20 March 2023", profession: "Mummy papa ko pareshan karna", location: "Delhi/NCR" }], children: [] },
+                      { id: 'g4-new', parents: [{ id: 'g4-new-p', name: "Baby Boy", role: "Great-Grandson", image: "", birthday: "Just Arrived! 🎉", profession: "Sabka Naya Ladla 🍼", location: "Delhi/NCR" }], children: [] }
+                  ]
                 },
                 { id: 'c2-2', parents: [{ id: 'g3-6', name: "Bharati Jorwal", role: "Granddaughter", image: "https://lh3.googleusercontent.com/pw/AP1GczOdo_eT1w3Iep-A6_5zn6TKhVI687QGy3ol2bKTJcx72w94TwP0r3xIST2Ew0onZ39zYz0Nrn6wDMiWW9Q4YCZu7spWH3PKezBsZU71FbwWv0f1os1GY9QRMbXOB3cysZ0Al-SDoVRylHkmxJZuftx7fw=w648-h863-s-no-gm?authuser=0", birthday: "15 May 2002", profession: "Hardworking Aspirant", location: "Jaipur" }], children: [] },
                 { id: 'c2-3', parents: [{ id: 'g3-7', name: "Deepak Jorwal", role: "Grandson", image: "https://lh3.googleusercontent.com/pw/AP1GczNNOgXHtcL3eFT0m3ldngKu6E906TfdgEK4YQNlyAC4C12POOeI6yyjvjiSoqMnYWZFxayL1pfO1Gao4RRrCNixuSsYvFtojgW97rdz1Ep2-q9GJi3HFfb6fKRJf3AWTaVIajEAm8m_1X533G0VcI9-zQ=w324-h432-s-no-gm?authuser=0", birthday: "3 October 2003", profession: "AG-3, VV GIRI NLI", location: "Noida" }], children: [] },
@@ -256,6 +298,8 @@
         ];
 
         const familyUpdates = [
+          // Added the Baby Announcement at the top of the updates!
+          { id: 0, text: "🍼 Badhai Ho! Pooja & Pawan are blessed with a beautiful Baby Boy! 🎉", date: "New Arrival" },
           { id: 1, text: "Abhishek Jorwal cleared SBI JA exam! 🏆", date: "Recent" },
           { id: 2, text: "Abhishek Jorwal cleared IBPS CSA exam! 🎉", date: "Recent" },
           { id: 3, text: "Lala kal dopeher me 3 baje soke 5 baje utha 😴", date: "Recent" },
@@ -513,7 +557,11 @@
 
           return (
             <div className={`min-h-screen relative transition-colors duration-500 ${isDarkMode ? 'dark' : ''}`}>
-             <div className="pattern-bg text-[#4A1515] dark:text-[#F3E5AB] pb-10">
+             
+             {/* Background Balloons Component */}
+             <Balloons />
+
+             <div className="pattern-bg text-[#4A1515] dark:text-[#F3E5AB] pb-10 relative z-10">
               
               {/* Desktop & Mobile Navigation */}
               <nav className={`fixed w-full z-[100] transition-all duration-500 ${scrolled ? 'bg-royal-dark/95 dark:bg-royal-night/95 backdrop-blur-md py-3 md:py-4 border-b-2 border-royal-gold/50 text-royal-lightgold' : 'bg-gradient-to-b from-royal-dark/90 to-transparent py-4 md:py-6 text-royal-lightgold'}`}>
@@ -569,7 +617,8 @@
                 {/* Decorative Hero Arch */}
                 <div className="absolute top-20 left-1/2 transform -translate-x-1/2 w-[90%] max-w-5xl h-full border-t-[3px] border-x-[3px] border-royal-gold/30 rounded-t-[50%] pointer-events-none"></div>
 
-                <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-16 border-[4px] border-double border-royal-gold/60 p-6 md:p-20 rounded-[2rem] bg-royal-dark/80 md:bg-royal-dark/50 md:backdrop-blur-sm shadow-[0_0_60px_rgba(212,175,55,0.2)]">
+                <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-16 border-[4px] border-double border-royal-gold/60 p-6 md:p-20 rounded-[2rem] bg-royal-dark/80 md:bg-royal-dark/50 md:backdrop-blur-sm shadow-[0_0_60px_rgba(212,175,55,0.2)] flex flex-col items-center">
+                  
                   <h1 className="font-serif text-4xl md:text-8xl font-bold leading-tight mb-6 md:mb-8 text-royal-lightgold drop-shadow-2xl">The Jorwal Parivaar</h1>
                   <p className="uppercase tracking-[0.3em] md:tracking-[0.5em] text-royal-gold font-bold text-xs md:text-sm mb-8 md:mb-10 border-y border-royal-gold/40 inline-block py-2">॥ वसुधैव कुटुम्बकम् ॥</p>
                   <br/>
@@ -784,13 +833,13 @@
                     <p className="text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-bold text-royal-maroon/60 dark:text-royal-gold/60 mb-8 md:mb-10 border-b border-royal-gold/30 inline-block pb-1 md:pb-2">Milestones & Updates</p>
 
                     <div className="space-y-4 max-w-2xl mx-auto text-left">
-                        {familyUpdates.map(update => (
-                            <div key={update.id} className="flex items-center gap-4 bg-white/60 dark:bg-black/30 p-4 md:p-5 rounded-xl md:rounded-2xl border border-royal-gold/30 hover:border-royal-gold/60 transition-colors shadow-sm">
-                                <div className="bg-gradient-to-br from-royal-maroon to-royal-crimson text-royal-gold p-2.5 md:p-3 rounded-full flex-shrink-0 shadow-md">
-                                    <Icon name="sparkles" className="w-4 h-4 md:w-5 md:h-5" />
+                        {familyUpdates.map((update, index) => (
+                            <div key={update.id} className={`flex items-center gap-4 p-4 md:p-5 rounded-xl md:rounded-2xl border transition-colors shadow-sm ${index === 0 ? 'bg-gradient-to-r from-royal-gold/20 to-transparent border-royal-gold dark:border-royal-gold/80' : 'bg-white/60 dark:bg-black/30 border-royal-gold/30 hover:border-royal-gold/60'}`}>
+                                <div className={`p-2.5 md:p-3 rounded-full flex-shrink-0 shadow-md ${index === 0 ? 'bg-royal-gold text-[#5C1616]' : 'bg-gradient-to-br from-royal-maroon to-royal-crimson text-royal-gold'}`}>
+                                    {index === 0 ? <Icon name="star" className="w-4 h-4 md:w-5 md:h-5 fill-current animate-pulse" /> : <Icon name="sparkles" className="w-4 h-4 md:w-5 md:h-5" />}
                                 </div>
                                 <div className="flex-1">
-                                    <p className="font-serif font-bold text-sm md:text-lg text-royal-dark dark:text-white leading-tight">{update.text}</p>
+                                    <p className={`font-serif font-bold text-sm md:text-lg leading-tight ${index === 0 ? 'text-royal-crimson dark:text-royal-gold' : 'text-royal-dark dark:text-white'}`}>{update.text}</p>
                                     <span className="text-[9px] md:text-[10px] text-royal-crimson dark:text-royal-gold uppercase tracking-wider font-bold mt-1.5 inline-block">{update.date}</span>
                                 </div>
                             </div>
@@ -988,6 +1037,15 @@
                   </div>
                 </div>
               )}
+
+              {/* ALWAYS VISIBLE: Floating Token of Love */}
+              <div className="fixed bottom-6 md:bottom-10 left-1/2 transform -translate-x-1/2 z-[90] animate-bounce w-max">
+                  <a href="#updates" className="bg-gradient-to-r from-[#D4AF37] to-[#FFF2CD] text-[#5C1616] px-5 py-3 md:px-8 md:py-4 rounded-full font-bold text-[10px] md:text-sm shadow-[0_0_30px_rgba(212,175,55,0.8)] border-2 border-white flex items-center gap-2 md:gap-3 cursor-pointer hover:scale-110 transition-transform whitespace-nowrap">
+                      <span className="text-lg md:text-2xl">🍼</span>
+                      <span className="tracking-wider">Welcoming Pooja & Pawan's Baby Boy! 🎉</span>
+                      <span className="text-lg md:text-2xl">✨</span>
+                  </a>
+              </div>
 
              </div>
             </div>
